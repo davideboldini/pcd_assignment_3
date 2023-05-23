@@ -9,11 +9,14 @@ import akka.actor.typed.javadsl.Receive;
 import org.assignemnt.message.MsgFile;
 import org.assignemnt.message.MsgFileLength;
 import org.assignemnt.message.MsgProtocol;
+import org.assignemnt.message.MsgStop;
+import org.assignemnt.utility.Pair;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FileActor extends AbstractBehavior<MsgProtocol> {
@@ -31,18 +34,22 @@ public class FileActor extends AbstractBehavior<MsgProtocol> {
     }
 
     private Behavior<MsgProtocol> onMsgFile(final MsgFile msg){
-        log(msg.getFileList().toString());
+        //log(msg.getFileList().toString());
 
         ActorRef<MsgProtocol> monitorActor = msg.getMonitorActor();
         List<File> fileList = msg.getFileList();
 
+        List<Pair<File, Long>> filePairList = new ArrayList<>();
+
         for (File f: fileList) {
             Long numRows = this.countNumRows(f);
-            monitorActor.tell(new MsgFileLength(f, numRows));
+            filePairList.add(new Pair<>(f, numRows));
         }
 
+        monitorActor.tell(new MsgFileLength(filePairList));
         return this;
     }
+
 
     public static Behavior<MsgProtocol> create() {
         return Behaviors.setup(FileActor::new);

@@ -1,18 +1,19 @@
 package org.assignemnt;
 
 import akka.actor.typed.ActorSystem;
+import org.assignemnt.GUI.Gui;
 import org.assignemnt.actor.BootActor;
+import org.assignemnt.actor.GuiActor;
 import org.assignemnt.message.MsgBoot;
+import org.assignemnt.message.MsgProtocol;
 import org.assignemnt.model.Directory;
+import org.assignemnt.utility.analyzer.SourceAnalyzer;
+import org.assignemnt.utility.analyzer.SourceAnalyzerImpl;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
 
-        final ActorSystem<MsgBoot> bootActor = ActorSystem.create(BootActor.create(), "boot_actor");
-
-        bootActor.tell(new MsgBoot(new Directory("C:/Users/david/Desktop/TestFolder2"), 1000, 5));
-
-        //Thread.sleep(1000);
-
+        Gui gui = new Gui();
+        gui.setVisible(true);
     }
 }

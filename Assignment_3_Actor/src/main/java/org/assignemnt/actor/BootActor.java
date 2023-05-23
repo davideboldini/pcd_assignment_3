@@ -6,29 +6,34 @@ import akka.actor.typed.javadsl.AbstractBehavior;
 import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
-import org.assignemnt.message.MsgBoot;
-import org.assignemnt.message.MsgDirectory;
-import org.assignemnt.message.MsgInit;
-import org.assignemnt.message.MsgProtocol;
+import org.assignemnt.message.*;
 
-public class BootActor extends AbstractBehavior<MsgBoot> {
+import java.util.ArrayList;
+import java.util.List;
 
+public class BootActor extends AbstractBehavior<MsgProtocol> {
 
-    public BootActor(ActorContext<MsgBoot> context) {
+    List<ActorRef<MsgProtocol>> actors = new ArrayList<>();
+
+    public BootActor(ActorContext<MsgProtocol> context) {
         super(context);
     }
 
     @Override
-    public Receive<MsgBoot> createReceive() {
+    public Receive<MsgProtocol> createReceive() {
         return newReceiveBuilder()
                 .onMessage(MsgBoot.class, this::onBootMsg)
                 .build();
     }
 
-    private Behavior<MsgBoot> onBootMsg(MsgBoot msg){
+    private Behavior<MsgProtocol> onBootMsg(final MsgBoot msg){
         ActorRef<MsgProtocol> monitorActor = this.getContext().spawn(MonitorActor.create(), "monitor_actor");
         ActorRef<MsgProtocol> directoryActor = this.getContext().spawn(DirectoryActor.create(), "directory_actor");
         ActorRef<MsgProtocol> fileActor = this.getContext().spawn(FileActor.create(), "file_actor");
+
+        actors.add(monitorActor);
+        actors.add(directoryActor);
+        actors.add(fileActor);
 
         monitorActor.tell(new MsgInit(msg.getMAXL(), msg.getNI()));
         directoryActor.tell(new MsgDirectory(msg.getStartDirectory(), fileActor, monitorActor));
@@ -36,7 +41,7 @@ public class BootActor extends AbstractBehavior<MsgBoot> {
         return this;
     }
 
-    public static Behavior<MsgBoot> create() {
+    public static Behavior<MsgProtocol> create() {
         return Behaviors.setup(BootActor::new);
     }
 }

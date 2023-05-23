@@ -1,22 +1,21 @@
 package org.assignemnt.message;
 
+import org.assignemnt.utility.Pair;
+
 import java.io.File;
+import java.util.List;
 
 public class MsgFileLength implements MsgProtocol{
 
-    private File file;
-    private Long numRows;
+    private List<Pair<File, Long>> fileList;
 
-    public MsgFileLength(final File file, final Long numRows){
-        this.file = file;
-        this.numRows = numRows;
+    public MsgFileLength(final List<Pair<File,Long>> fileList){
+        this.fileList = fileList;
     }
 
-    public File getFile() {
-        return this.file;
+    public List<Pair<File,Long>> getFile() {
+        return this.fileList;
     }
 
-    public Long getNumRows() {
-        return this.numRows;
-    }
+
 }

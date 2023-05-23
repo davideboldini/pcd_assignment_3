@@ -9,14 +9,13 @@ import akka.actor.typed.javadsl.Receive;
 import org.assignemnt.message.MsgDirectory;
 import org.assignemnt.message.MsgFile;
 import org.assignemnt.message.MsgProtocol;
+import org.assignemnt.message.MsgStop;
 import org.assignemnt.model.Directory;
 
 import java.io.File;
 import java.util.List;
 
 public class DirectoryActor extends AbstractBehavior<MsgProtocol> {
-
-
 
     public DirectoryActor(ActorContext<MsgProtocol> context) {
         super(context);
@@ -30,7 +29,7 @@ public class DirectoryActor extends AbstractBehavior<MsgProtocol> {
     }
 
     private Behavior<MsgProtocol> onDirectoryMsg(MsgDirectory msg){
-        log("got directory" + msg.getDirectory().getDirPath());
+        //log("got directory" + msg.getDirectory().getDirPath());
 
         Directory directory = msg.getDirectory();
         ActorRef<MsgProtocol> fileActor = msg.getFileActor();
@@ -45,6 +44,7 @@ public class DirectoryActor extends AbstractBehavior<MsgProtocol> {
 
         return this;
     }
+
 
     public static Behavior<MsgProtocol> create() {
         return Behaviors.setup(DirectoryActor::new);

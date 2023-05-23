@@ -5,16 +5,17 @@ import akka.actor.typed.javadsl.AbstractBehavior;
 import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
-import org.assignemnt.message.MsgFile;
-import org.assignemnt.message.MsgFileLength;
-import org.assignemnt.message.MsgInit;
-import org.assignemnt.message.MsgProtocol;
+import org.assignemnt.message.*;
 import org.assignemnt.utility.Pair;
+import org.assignemnt.utility.analyzer.SourceAnalyzerImpl;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.TreeSet;
+
+import static org.assignemnt.utility.analyzer.SourceAnalyzerImpl.guiActor;
 
 public class MonitorActor extends AbstractBehavior<MsgProtocol> {
 
@@ -46,16 +47,20 @@ public class MonitorActor extends AbstractBehavior<MsgProtocol> {
 
     private Behavior<MsgProtocol> onMsgFile(final MsgFileLength msg){
 
-        File file = msg.getFile();
-        Long numRows = msg.getNumRows();
+        List<Pair<File, Long>> fileList = msg.getFile();
 
-        this.fileLengthTree.add(new Pair<>(file, numRows));
-        this.addMap(numRows);
+        for (Pair<File, Long> pair: fileList) {
+            this.fileLengthTree.add(new Pair<>(pair.getX(), pair.getY()));
+            this.addMap(pair.getY());
+        }
+
+        guiActor.tell(new MsgGui(this.fileLengthTree, this.intervalMap));
 
         System.out.println(fileLengthTree.size());
 
         return this;
     }
+
 
     public static Behavior<MsgProtocol> create() {
         return Behaviors.setup(MonitorActor::new);
