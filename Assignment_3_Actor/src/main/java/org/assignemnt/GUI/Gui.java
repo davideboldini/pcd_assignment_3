@@ -23,6 +23,7 @@ public class Gui {
 	private final JButton btnSearch;
 	private int N;
 	private final Printer printer;
+	private SourceAnalyzer sourceAnalyzer;
 
 	/**
 	 * Create the application.
@@ -31,7 +32,7 @@ public class Gui {
 
 		this.printer = new Printer();
 
-		SourceAnalyzer sourceAnalyzer = new SourceAnalyzerImpl();
+		this.sourceAnalyzer = new SourceAnalyzerImpl();
 
 		frame = new JFrame();
 		frame.setBounds(100, 100, 789, 700);
@@ -218,7 +219,8 @@ public class Gui {
 		}
 	}
 
-	private void setEndGui(){
+	public void setEndGui(){
+		sourceAnalyzer.stopActors();
 		try {
 			SwingUtilities.invokeLater(() -> {
 				JOptionPane.showMessageDialog(frame, "Elaborazione terminata","Completato", JOptionPane.PLAIN_MESSAGE);

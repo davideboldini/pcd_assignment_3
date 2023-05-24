@@ -15,7 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.TreeSet;
 
-import static org.assignemnt.utility.analyzer.SourceAnalyzerImpl.guiActor;
+import static org.assignemnt.utility.analyzer.SourceAnalyzerImpl.guiSystem;
 
 public class MonitorActor extends AbstractBehavior<MsgProtocol> {
 
@@ -54,9 +54,8 @@ public class MonitorActor extends AbstractBehavior<MsgProtocol> {
             this.addMap(pair.getY());
         }
 
-        guiActor.tell(new MsgGui(this.fileLengthTree, this.intervalMap));
-
-        System.out.println(fileLengthTree.size());
+        SourceAnalyzerImpl.numMsg++;
+        guiSystem.tell(new MsgGui(this.fileLengthTree, this.intervalMap));
 
         return this;
     }

@@ -36,6 +36,7 @@ public class DirectoryActor extends AbstractBehavior<MsgProtocol> {
 
         fileActor.tell(new MsgFile(fileList, monitorActor));
 
+
         for (Directory d: directory.getDirectoryList()) {
             this.getContext().getSelf().tell(new MsgDirectory(d, fileActor, monitorActor));
         }
