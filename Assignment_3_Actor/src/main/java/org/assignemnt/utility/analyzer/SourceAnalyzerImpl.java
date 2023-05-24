@@ -6,7 +6,6 @@ import org.assignemnt.actor.BootActor;
 import org.assignemnt.actor.GuiActor;
 import org.assignemnt.message.MsgBoot;
 import org.assignemnt.message.MsgProtocol;
-import org.assignemnt.message.MsgStop;
 import org.assignemnt.model.Directory;
 
 public class SourceAnalyzerImpl implements SourceAnalyzer{

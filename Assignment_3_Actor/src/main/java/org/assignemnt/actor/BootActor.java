@@ -13,8 +13,6 @@ import java.util.List;
 
 public class BootActor extends AbstractBehavior<MsgProtocol> {
 
-    List<ActorRef<MsgProtocol>> actors = new ArrayList<>();
-
     public BootActor(ActorContext<MsgProtocol> context) {
         super(context);
     }
@@ -30,10 +28,6 @@ public class BootActor extends AbstractBehavior<MsgProtocol> {
         ActorRef<MsgProtocol> monitorActor = this.getContext().spawn(MonitorActor.create(), "monitor_actor");
         ActorRef<MsgProtocol> directoryActor = this.getContext().spawn(DirectoryActor.create(), "directory_actor");
         ActorRef<MsgProtocol> fileActor = this.getContext().spawn(FileActor.create(), "file_actor");
-
-        actors.add(monitorActor);
-        actors.add(directoryActor);
-        actors.add(fileActor);
 
         monitorActor.tell(new MsgInit(msg.getMAXL(), msg.getNI()));
         directoryActor.tell(new MsgDirectory(msg.getStartDirectory(), fileActor, monitorActor));

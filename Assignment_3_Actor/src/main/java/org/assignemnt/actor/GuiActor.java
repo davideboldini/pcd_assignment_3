@@ -8,7 +8,6 @@ import akka.actor.typed.javadsl.Receive;
 import org.assignemnt.GUI.Gui;
 import org.assignemnt.message.MsgGui;
 import org.assignemnt.message.MsgProtocol;
-import org.assignemnt.message.MsgStop;
 import org.assignemnt.utility.Pair;
 
 public class GuiActor extends AbstractBehavior<MsgProtocol> {
@@ -24,17 +23,12 @@ public class GuiActor extends AbstractBehavior<MsgProtocol> {
     public Receive<MsgProtocol> createReceive() {
         return newReceiveBuilder()
                 .onMessage(MsgGui.class, this::onGuiMsg)
-                .onMessage(MsgStop.class, this::onStopMsg)
                 .build();
     }
 
     private Behavior<MsgProtocol> onGuiMsg(MsgGui msg) {
         this.gui.updateGui(new Pair<>(msg.getFileLengthTree(), msg.getIntervalMap()));
         return this;
-    }
-
-    private Behavior<MsgProtocol> onStopMsg(final MsgStop msg) {
-        return Behaviors.stopped();
     }
 
     public static Behavior<MsgProtocol> create(final Gui gui){

@@ -9,7 +9,6 @@ import akka.actor.typed.javadsl.Receive;
 import org.assignemnt.message.MsgFile;
 import org.assignemnt.message.MsgFileLength;
 import org.assignemnt.message.MsgProtocol;
-import org.assignemnt.message.MsgStop;
 import org.assignemnt.utility.Pair;
 
 import java.io.File;
@@ -34,7 +33,6 @@ public class FileActor extends AbstractBehavior<MsgProtocol> {
     }
 
     private Behavior<MsgProtocol> onMsgFile(final MsgFile msg){
-        //log(msg.getFileList().toString());
 
         ActorRef<MsgProtocol> monitorActor = msg.getMonitorActor();
         List<File> fileList = msg.getFileList();

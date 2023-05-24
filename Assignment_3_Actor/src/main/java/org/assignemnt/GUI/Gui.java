@@ -144,6 +144,7 @@ public class Gui {
 			btnSearch.setEnabled(true);
 
 			sourceAnalyzer.stopActors();
+			this.setEndGui();
 
 			textAreaFileLength.setEditable(false);
 			textAreaInterval.setEditable(false);
