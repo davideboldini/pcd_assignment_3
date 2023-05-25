@@ -1,4 +1,4 @@
-package org.example.network;
+package org.project.network;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -8,12 +8,16 @@ import java.io.IOException;
 
 public class Publisher {
 
+    private String uniqueID;
     private String exchangeName;
     private ConnectionFactory factory;
     private Channel channel;
     private Connection connection;
 
-    public Publisher(final String exchangeName, final String hostName) throws Exception {
+    public Publisher(final String uniqueID, final String exchangeName, final String hostName) throws Exception {
+
+        this.uniqueID = uniqueID;
+
         this.factory = new ConnectionFactory();
         this.factory.setHost(hostName);
 
@@ -21,6 +25,7 @@ public class Publisher {
 
         this.connection = factory.newConnection();
         this.channel = connection.createChannel();
+
 
         this.channel.exchangeDeclare(exchangeName, "topic");
 
@@ -40,6 +45,7 @@ public class Publisher {
         }
     }
 
+    /*
     public static void main(String[] args) throws Exception {
         Publisher publisher = new Publisher("topic_logs", "localhost");
 
@@ -47,4 +53,6 @@ public class Publisher {
 
         publisher.closeConnection();
     }
+
+     */
 }

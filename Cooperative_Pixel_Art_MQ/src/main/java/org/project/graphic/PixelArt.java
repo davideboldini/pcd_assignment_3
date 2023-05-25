@@ -1,19 +1,16 @@
-package org.example;
+package org.project.graphic;
 
-import org.example.graphic.BrushManager;
-import org.example.graphic.PixelGrid;
-import org.example.graphic.PixelGridView;
+import org.project.graphic.BrushManager;
+import org.project.graphic.PixelGrid;
+import org.project.graphic.PixelGridView;
 
 import java.util.Random;
 
-public class PixelArtMain {
+public class PixelArt {
 
-	public static int randomColor() {
-		Random rand = new Random();
-		return rand.nextInt(256 * 256 * 256);
-	}
+	PixelGridView view;
 
-	public static void main(String[] args) {
+	public void initPixelArt(){
 		var brushManager = new BrushManager();
 		var localBrush = new BrushManager.Brush(0, 0, randomColor());
 		var fooBrush = new BrushManager.Brush(0, 0, randomColor());
@@ -26,7 +23,7 @@ public class PixelArtMain {
 			grid.set(rand.nextInt(40), rand.nextInt(40), randomColor());
 		}
 
-		PixelGridView view = new PixelGridView(grid, brushManager, 800, 800);
+		view = new PixelGridView(grid, brushManager, 800, 800);
 
 		view.addMouseMovedListener((x, y) -> {
 			localBrush.updatePosition(x, y);
@@ -39,8 +36,15 @@ public class PixelArtMain {
 		});
 
 		view.addColorChangedListener(localBrush::setColor);
+	}
 
+	public void showView(){
 		view.display();
+	}
+
+	public static int randomColor() {
+		Random rand = new Random();
+		return rand.nextInt(256 * 256 * 256);
 	}
 
 }

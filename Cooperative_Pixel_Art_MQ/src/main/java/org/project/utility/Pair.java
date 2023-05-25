@@ -1,4 +1,4 @@
-package org.example.utility;/*
+package org.project.utility;/*
  * A standard generic utility.Pair<X,Y>, with getters, hashCode, equals, and toString well implemented.
  */
 

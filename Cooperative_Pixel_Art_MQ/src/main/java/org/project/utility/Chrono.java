@@ -1,4 +1,4 @@
-package org.example.utility;
+package org.project.utility;
 
 public class Chrono {
 
