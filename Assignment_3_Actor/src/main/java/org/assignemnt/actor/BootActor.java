@@ -9,12 +9,17 @@ import akka.actor.typed.javadsl.Receive;
 import org.assignemnt.message.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BootActor extends AbstractBehavior<MsgProtocol> {
 
+    private Map<String, ActorRef<MsgProtocol>> actorRefMap;
+
     public BootActor(ActorContext<MsgProtocol> context) {
         super(context);
+        this.actorRefMap = new HashMap<>();
     }
 
     @Override
@@ -29,11 +34,29 @@ public class BootActor extends AbstractBehavior<MsgProtocol> {
         ActorRef<MsgProtocol> directoryActor = this.getContext().spawn(DirectoryActor.create(), "directory_actor");
         ActorRef<MsgProtocol> fileActor = this.getContext().spawn(FileActor.create(), "file_actor");
 
+        ActorRef<MsgProtocol> completeActor;
+        if (msg.getFinalResult() != null) {
+            completeActor = this.getContext().spawn(CompleteActor.create(msg.getFinalResult()), "complete_actor");
+        } else {
+            completeActor = this.getContext().spawn(CompleteActor.create(), "complete_actor");
+        }
+        actorRefMap.put("complete_actor", completeActor);
+
+        if (msg.getGui() != null){
+            ActorRef<MsgProtocol> guiActor = this.getContext().spawn(GuiActor.create(msg.getGui()), "gui_actor");
+            actorRefMap.put("gui_actor", guiActor);
+        }
+
+        actorRefMap.put("monitor_actor", monitorActor);
+        actorRefMap.put("directory_actor", directoryActor);
+        actorRefMap.put("file_actor", fileActor);
+
         monitorActor.tell(new MsgInit(msg.getMAXL(), msg.getNI()));
-        directoryActor.tell(new MsgDirectory(msg.getStartDirectory(), fileActor, monitorActor));
+        directoryActor.tell(new MsgDirectory(msg.getStartDirectory(), actorRefMap));
 
         return this;
     }
+
 
     public static Behavior<MsgProtocol> create() {
         return Behaviors.setup(BootActor::new);

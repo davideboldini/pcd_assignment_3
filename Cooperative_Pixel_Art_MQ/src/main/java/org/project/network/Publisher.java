@@ -3,16 +3,20 @@ package org.project.network;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import org.apache.commons.lang3.SerializationUtils;
+import org.project.message.MessageWelcome;
+import org.project.message.MessageClick;
+import org.project.message.MessagePosition;
 
 import java.io.IOException;
 
 public class Publisher {
 
-    private String uniqueID;
-    private String exchangeName;
     private ConnectionFactory factory;
-    private Channel channel;
-    private Connection connection;
+    private final String uniqueID;
+    private final String exchangeName;
+    private final Channel channel;
+    private final Connection connection;
 
     public Publisher(final String uniqueID, final String exchangeName, final String hostName) throws Exception {
 
@@ -35,6 +39,22 @@ public class Publisher {
         this.channel.basicPublish(exchangeName, routingKey, null, message.getBytes("UTF-8"));
     }
 
+    public void publishBootMessage(final MessageWelcome message) throws IOException {
+        message.setIdSender(uniqueID);
+        this.channel.basicPublish(exchangeName, Topics.BOOT_TOPIC.name(), null, SerializationUtils.serialize(message));
+    }
+
+    public void publishPositionMessage(final MessagePosition message) throws IOException {
+        message.setIdSender(uniqueID);
+        this.channel.basicPublish(exchangeName, Topics.MOUSE_POSITION_TOPIC.name(), null, SerializationUtils.serialize(message));
+    }
+
+    public void publishClickMessage(final MessageClick message) throws IOException {
+        message.setIdSender(uniqueID);
+        this.channel.basicPublish(exchangeName, Topics.CELL_CLICK_TOPIC.name(), null, SerializationUtils.serialize(message));
+
+    }
+
     public void closeConnection(){
         if (connection != null && connection.isOpen()){
             try {
@@ -45,14 +65,4 @@ public class Publisher {
         }
     }
 
-    /*
-    public static void main(String[] args) throws Exception {
-        Publisher publisher = new Publisher("topic_logs", "localhost");
-
-        publisher.publishMessage("anonymous.info", "Hello");
-
-        publisher.closeConnection();
-    }
-
-     */
 }

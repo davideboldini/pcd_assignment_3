@@ -1,22 +1,22 @@
 package org.project.message;
 
-import org.project.graphic.PixelGrid;
+import org.project.utility.Pair;
 
-public class MessageBoot {
+public class MessageBoot extends MessagePosition{
 
     private String idSender;
-    private PixelGrid currentPixelGrid;
 
-    public MessageBoot(final String idSender, final PixelGrid currentPixelGrid){
-        this.idSender = idSender;
-        this.currentPixelGrid = currentPixelGrid;
+    public MessageBoot(Pair<Integer, Integer> position, int colorBrush) {
+        super(position, colorBrush);
     }
 
-    public PixelGrid getCurrentPixelGrid() {
-        return this.currentPixelGrid;
-    }
-
+    @Override
     public String getIdSender() {
         return this.idSender;
+    }
+
+    @Override
+    public void setIdSender(final String idSender) {
+        this.idSender = idSender;
     }
 }

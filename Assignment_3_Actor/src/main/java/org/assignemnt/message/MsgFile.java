@@ -5,22 +5,23 @@ import akka.actor.typed.ActorRef;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MsgFile implements MsgProtocol{
 
-    private List<File> fileList;
-    private ActorRef<MsgProtocol> monitorActor;
+    private final List<File> fileList;
+    private final Map<String, ActorRef<MsgProtocol>> actorRefMap;
 
-    public MsgFile(final List<File> fileList, final ActorRef<MsgProtocol> monitorActor){
+    public MsgFile(final List<File> fileList, final Map<String, ActorRef<MsgProtocol>> actorRefMap){
         this.fileList = new ArrayList<>(fileList);
-        this.monitorActor = monitorActor;
+        this.actorRefMap = actorRefMap;
     }
 
     public List<File> getFileList(){
         return this.fileList;
     }
 
-    public ActorRef<MsgProtocol> getMonitorActor() {
-        return this.monitorActor;
+    public Map<String, ActorRef<MsgProtocol>> getActorRefMap() {
+        return this.actorRefMap;
     }
 }

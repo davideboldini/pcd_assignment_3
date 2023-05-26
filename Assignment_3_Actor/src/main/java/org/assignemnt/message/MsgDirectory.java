@@ -3,27 +3,23 @@ package org.assignemnt.message;
 import akka.actor.typed.ActorRef;
 import org.assignemnt.model.Directory;
 
+import java.util.Map;
+
 public class MsgDirectory implements MsgProtocol{
 
     private Directory directory;
-    private ActorRef<MsgProtocol> fileActor;
-    private ActorRef<MsgProtocol> monitorActor;
+    private Map<String, ActorRef<MsgProtocol>> actorRefMap;
 
-    public MsgDirectory(final Directory directory, final ActorRef<MsgProtocol> fileActor, final ActorRef<MsgProtocol> monitorActor){
+    public MsgDirectory(final Directory directory, final Map<String, ActorRef<MsgProtocol>> actorRefMap){
         this.directory = directory;
-        this.fileActor = fileActor;
-        this.monitorActor = monitorActor;
+        this.actorRefMap = actorRefMap;
     }
 
     public Directory getDirectory() {
         return this.directory;
     }
 
-    public ActorRef<MsgProtocol> getFileActor() {
-        return this.fileActor;
-    }
-
-    public ActorRef<MsgProtocol> getMonitorActor() {
-        return this.monitorActor;
+    public Map<String, ActorRef<MsgProtocol>> getActorRefMap() {
+        return this.actorRefMap;
     }
 }

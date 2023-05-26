@@ -10,9 +10,11 @@ import org.assignemnt.message.MsgDirectory;
 import org.assignemnt.message.MsgFile;
 import org.assignemnt.message.MsgProtocol;
 import org.assignemnt.model.Directory;
+import org.assignemnt.utility.analyzer.SourceAnalyzerImpl;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 public class DirectoryActor extends AbstractBehavior<MsgProtocol> {
 
@@ -29,16 +31,21 @@ public class DirectoryActor extends AbstractBehavior<MsgProtocol> {
 
     private Behavior<MsgProtocol> onDirectoryMsg(MsgDirectory msg){
 
+        SourceAnalyzerImpl.numMsg++;
+
         Directory directory = msg.getDirectory();
-        ActorRef<MsgProtocol> fileActor = msg.getFileActor();
-        ActorRef<MsgProtocol> monitorActor = msg.getMonitorActor();
+
+        Map<String, ActorRef<MsgProtocol>> actorRefMap = msg.getActorRefMap();
+        ActorRef<MsgProtocol> fileActor = actorRefMap.get("file_actor");
+        ActorRef<MsgProtocol> monitorActor = actorRefMap.get("monitor_actor");
+
         List<File> fileList = directory.getJavaFileList();
 
-        fileActor.tell(new MsgFile(fileList, monitorActor));
+        fileActor.tell(new MsgFile(fileList, actorRefMap));
 
 
         for (Directory d: directory.getDirectoryList()) {
-            this.getContext().getSelf().tell(new MsgDirectory(d, fileActor, monitorActor));
+            this.getContext().getSelf().tell(new MsgDirectory(d, actorRefMap));
         }
 
         return this;

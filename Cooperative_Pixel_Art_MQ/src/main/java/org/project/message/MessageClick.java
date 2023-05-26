@@ -2,13 +2,14 @@ package org.project.message;
 
 import org.project.model.Cell;
 
-public class MessageClick {
+import java.io.Serializable;
+
+public class MessageClick implements Serializable {
 
     private String idSender;
-    private Cell cellClicked;
+    private final Cell cellClicked;
 
-    public MessageClick(final String idSender, final Cell cellClicked){
-        this.idSender = idSender;
+    public MessageClick(final Cell cellClicked){
         this.cellClicked = cellClicked;
     }
 
@@ -18,5 +19,17 @@ public class MessageClick {
 
     public Cell getCellClicked() {
         return this.cellClicked;
+    }
+
+    public void setIdSender(final String idSender) {
+        this.idSender = idSender;
+    }
+
+    @Override
+    public String toString() {
+        return "MessageClick{" +
+                "idSender='" + idSender + '\'' +
+                ", cellClicked=" + cellClicked +
+                '}';
     }
 }

@@ -1,5 +1,6 @@
 package org.assignemnt.actor;
 
+import akka.actor.typed.ActorRef;
 import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.AbstractBehavior;
 import akka.actor.typed.javadsl.ActorContext;
@@ -10,10 +11,7 @@ import org.assignemnt.utility.Pair;
 import org.assignemnt.utility.analyzer.SourceAnalyzerImpl;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.TreeSet;
+import java.util.*;
 
 import static org.assignemnt.utility.analyzer.SourceAnalyzerImpl.guiSystem;
 
@@ -48,14 +46,23 @@ public class MonitorActor extends AbstractBehavior<MsgProtocol> {
     private Behavior<MsgProtocol> onMsgFile(final MsgFileLength msg){
 
         List<Pair<File, Long>> fileList = msg.getFile();
+        Map<String, ActorRef<MsgProtocol>> actorRefMap = msg.getActorRefMap();
 
         for (Pair<File, Long> pair: fileList) {
             this.fileLengthTree.add(new Pair<>(pair.getX(), pair.getY()));
             this.addMap(pair.getY());
         }
 
-        SourceAnalyzerImpl.numMsg++;
-        guiSystem.tell(new MsgGui(this.fileLengthTree, this.intervalMap));
+        SourceAnalyzerImpl.numMsg--;
+
+        if (actorRefMap.get("gui_actor") != null) {
+            actorRefMap.get("gui_actor").tell(new MsgCompleteUpdate(this.fileLengthTree, this.intervalMap, msg.getActorRefMap()));
+        }
+
+        if (SourceAnalyzerImpl.numMsg == 0){
+            ActorRef<MsgProtocol> completeActor = actorRefMap.get("complete_actor");
+            completeActor.tell(new MsgCompleteUpdate(this.fileLengthTree, this.intervalMap, msg.getActorRefMap()));
+        }
 
         return this;
     }

@@ -10,6 +10,7 @@ import org.assignemnt.message.MsgFile;
 import org.assignemnt.message.MsgFileLength;
 import org.assignemnt.message.MsgProtocol;
 import org.assignemnt.utility.Pair;
+import org.assignemnt.utility.analyzer.SourceAnalyzerImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +35,7 @@ public class FileActor extends AbstractBehavior<MsgProtocol> {
 
     private Behavior<MsgProtocol> onMsgFile(final MsgFile msg){
 
-        ActorRef<MsgProtocol> monitorActor = msg.getMonitorActor();
+        ActorRef<MsgProtocol> monitorActor = msg.getActorRefMap().get("monitor_actor");
         List<File> fileList = msg.getFileList();
 
         List<Pair<File, Long>> filePairList = new ArrayList<>();
@@ -44,7 +45,8 @@ public class FileActor extends AbstractBehavior<MsgProtocol> {
             filePairList.add(new Pair<>(f, numRows));
         }
 
-        monitorActor.tell(new MsgFileLength(filePairList));
+
+        monitorActor.tell(new MsgFileLength(filePairList, msg.getActorRefMap()));
         return this;
     }
 
@@ -52,7 +54,6 @@ public class FileActor extends AbstractBehavior<MsgProtocol> {
     public static Behavior<MsgProtocol> create() {
         return Behaviors.setup(FileActor::new);
     }
-
 
 
     private Long countNumRows(final File file) {

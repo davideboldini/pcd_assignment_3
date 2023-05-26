@@ -6,7 +6,8 @@ import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
 import org.assignemnt.GUI.Gui;
-import org.assignemnt.message.MsgGui;
+import org.assignemnt.message.MsgComplete;
+import org.assignemnt.message.MsgCompleteUpdate;
 import org.assignemnt.message.MsgProtocol;
 import org.assignemnt.utility.Pair;
 import org.assignemnt.utility.analyzer.SourceAnalyzerImpl;
@@ -15,7 +16,6 @@ import org.assignemnt.utility.analyzer.SourceAnalyzerImpl;
 public class GuiActor extends AbstractBehavior<MsgProtocol> {
 
     private final Gui gui;
-    private int count = 0;
 
     public GuiActor(ActorContext<MsgProtocol> context, final Gui gui) {
         super(context);
@@ -25,16 +25,19 @@ public class GuiActor extends AbstractBehavior<MsgProtocol> {
     @Override
     public Receive<MsgProtocol> createReceive() {
         return newReceiveBuilder()
-                .onMessage(MsgGui.class, this::onGuiMsg)
+                .onMessage(MsgCompleteUpdate.class, this::onGuiMsg)
+                .onMessage(MsgComplete.class, this::onCompleteMsg)
                 .build();
     }
 
-    private Behavior<MsgProtocol> onGuiMsg(MsgGui msg) {
+    private Behavior<MsgProtocol> onCompleteMsg(final MsgComplete msg) {
+        this.gui.setEndGui();
+        getContext().getSystem().terminate();
+        return this;
+    }
+
+    private Behavior<MsgProtocol> onGuiMsg(final MsgCompleteUpdate msg) {
         this.gui.updateGui(new Pair<>(msg.getFileLengthTree(), msg.getIntervalMap()));
-        SourceAnalyzerImpl.numMsg--;
-        if (SourceAnalyzerImpl.numMsg == 0){
-            this.gui.setEndGui();
-        }
         return this;
     }
 
