@@ -13,8 +13,6 @@ import org.assignemnt.utility.analyzer.SourceAnalyzerImpl;
 import java.io.File;
 import java.util.*;
 
-import static org.assignemnt.utility.analyzer.SourceAnalyzerImpl.guiSystem;
-
 public class MonitorActor extends AbstractBehavior<MsgProtocol> {
 
     private TreeSet<Pair<File,Long>> fileLengthTree;

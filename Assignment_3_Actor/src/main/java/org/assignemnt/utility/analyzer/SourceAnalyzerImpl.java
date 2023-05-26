@@ -1,11 +1,8 @@
 package org.assignemnt.utility.analyzer;
 
-import akka.actor.typed.ActorRef;
 import akka.actor.typed.ActorSystem;
 import org.assignemnt.GUI.Gui;
 import org.assignemnt.actor.BootActor;
-import org.assignemnt.actor.CompleteActor;
-import org.assignemnt.actor.GuiActor;
 import org.assignemnt.message.MsgBoot;
 import org.assignemnt.message.MsgProtocol;
 import org.assignemnt.model.Directory;

@@ -37,7 +37,6 @@ public class DirectoryActor extends AbstractBehavior<MsgProtocol> {
 
         Map<String, ActorRef<MsgProtocol>> actorRefMap = msg.getActorRefMap();
         ActorRef<MsgProtocol> fileActor = actorRefMap.get("file_actor");
-        ActorRef<MsgProtocol> monitorActor = actorRefMap.get("monitor_actor");
 
         List<File> fileList = directory.getJavaFileList();
 

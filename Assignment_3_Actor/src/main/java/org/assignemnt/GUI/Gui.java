@@ -1,7 +1,5 @@
 package org.assignemnt.GUI;
 
-import akka.actor.typed.ActorRef;
-import org.assignemnt.message.MsgProtocol;
 import org.assignemnt.model.Directory;
 import org.assignemnt.utility.Pair;
 import org.assignemnt.utility.Printer;
@@ -23,7 +21,7 @@ public class Gui {
 	private final JButton btnSearch;
 	private int N;
 	private final Printer printer;
-	private SourceAnalyzer sourceAnalyzer;
+	private final SourceAnalyzer sourceAnalyzer;
 
 	/**
 	 * Create the application.
@@ -212,9 +210,7 @@ public class Gui {
 	private void updateInterval(final Map<Pair<Integer,Integer>, Integer> intervalMap){
 
 		try {
-			SwingUtilities.invokeAndWait(() -> {
-				textAreaInterval.setText(printer.printIntervalGui(intervalMap));
-			});
+			SwingUtilities.invokeAndWait(() -> textAreaInterval.setText(printer.printIntervalGui(intervalMap)));
 		} catch (Exception ignored) {
 		}
 	}

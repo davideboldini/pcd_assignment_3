@@ -10,7 +10,6 @@ import org.assignemnt.message.MsgFile;
 import org.assignemnt.message.MsgFileLength;
 import org.assignemnt.message.MsgProtocol;
 import org.assignemnt.utility.Pair;
-import org.assignemnt.utility.analyzer.SourceAnalyzerImpl;
 
 import java.io.File;
 import java.io.IOException;

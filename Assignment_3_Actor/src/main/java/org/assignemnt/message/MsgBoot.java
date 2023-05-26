@@ -12,9 +12,9 @@ import java.util.concurrent.CompletableFuture;
 
 public class MsgBoot implements MsgProtocol{
 
-    private Directory startDirectory;
-    private int MAXL;
-    private int NI;
+    private final Directory startDirectory;
+    private final int MAXL;
+    private final int NI;
     private CompletableFuture<Pair<TreeSet<Pair<File,Long>>, Map<Pair<Integer,Integer>, Integer>>> finalResult;
     private Gui gui;
 

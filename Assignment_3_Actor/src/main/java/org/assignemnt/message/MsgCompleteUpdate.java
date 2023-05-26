@@ -7,13 +7,12 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
-import java.util.concurrent.CompletableFuture;
 
 public class MsgCompleteUpdate implements MsgProtocol{
 
     private final TreeSet<Pair<File,Long>> fileLengthTree;
     private final HashMap<Pair<Integer,Integer>, Integer> intervalMap;
-    private Map<String, ActorRef<MsgProtocol>> actorRefMap;
+    private final Map<String, ActorRef<MsgProtocol>> actorRefMap;
 
     public MsgCompleteUpdate(final TreeSet<Pair<File,Long>> fileLengthTree, final HashMap<Pair<Integer,Integer>, Integer> intervalMap,
                              final Map<String, ActorRef<MsgProtocol>> actorRefMap){

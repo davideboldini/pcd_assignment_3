@@ -2,8 +2,8 @@ package org.assignemnt.message;
 
 public class MsgInit implements MsgProtocol{
 
-    private int MAXL;
-    private int NI;
+    private final int MAXL;
+    private final int NI;
 
     public MsgInit(final int MAXL, final int NI){
         this.MAXL = MAXL;
