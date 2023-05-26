@@ -18,7 +18,6 @@ import java.util.concurrent.CompletableFuture;
 
 public class SourceAnalyzerImpl implements SourceAnalyzer{
 
-    public static ActorSystem<MsgProtocol> guiSystem;
     private ActorSystem<MsgProtocol> bootSystem;
     public static int numMsg = 0;
 
@@ -36,14 +35,12 @@ public class SourceAnalyzerImpl implements SourceAnalyzer{
 
     public void analyzeSources(final Directory dir, final int MAXL, final int NI, final Gui gui){
         bootSystem = ActorSystem.create(BootActor.create(), "boot_actor");
-        //guiSystem = ActorSystem.create(GuiActor.create(gui), "gui_actor");
         bootSystem.tell(new MsgBoot(dir, MAXL, NI, gui));
 
     }
 
     public void stopActors(){
         bootSystem.terminate();
-        //guiSystem.terminate();
     }
 
 }

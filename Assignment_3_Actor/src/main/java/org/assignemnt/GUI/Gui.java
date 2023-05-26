@@ -220,7 +220,6 @@ public class Gui {
 	}
 
 	public void setEndGui(){
-		//sourceAnalyzer.stopActors();
 		try {
 			SwingUtilities.invokeLater(() -> {
 				JOptionPane.showMessageDialog(frame, "Elaborazione terminata","Completato", JOptionPane.PLAIN_MESSAGE);
