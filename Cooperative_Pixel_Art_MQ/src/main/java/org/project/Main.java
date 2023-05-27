@@ -1,8 +1,10 @@
 package org.project;
 
 import org.project.graphic.PixelArt;
+import org.project.message.MessageBoot;
 import org.project.network.Publisher;
 import org.project.network.Subscriber;
+import org.project.utility.Pair;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -16,15 +18,18 @@ public class Main {
         String exchangeName = "Test";
         String hostname = "localhost";
 
-        Subscriber subscriber = new Subscriber(uniqueID, exchangeName, hostname);
-        subscriber.attachPositionTopic();
 
+        Subscriber subscriber = new Subscriber(uniqueID, exchangeName, hostname);
         Publisher publisher = new Publisher(uniqueID, exchangeName, hostname);
 
         PixelArt pixelArt = new PixelArt();
-        pixelArt.attachPublisher(publisher);
         pixelArt.initPixelArt();
         pixelArt.showView();
+        pixelArt.attachPublisher(publisher);
 
+        subscriber.attachNewConnectionTopic();
+        subscriber.attachPositionTopic();
+
+        publisher.publishNewConnectionMessage(new MessageBoot());
     }
 }

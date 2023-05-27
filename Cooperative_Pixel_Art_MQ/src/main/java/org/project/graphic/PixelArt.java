@@ -3,6 +3,7 @@ package org.project.graphic;
 import org.project.graphic.BrushManager;
 import org.project.graphic.PixelGrid;
 import org.project.graphic.PixelGridView;
+import org.project.message.MessageBoot;
 import org.project.message.MessagePosition;
 import org.project.network.Publisher;
 import org.project.utility.Pair;
@@ -15,7 +16,7 @@ public class PixelArt {
 	PixelGridView view;
 	Publisher publisher;
 
-	public void initPixelArt(){
+	public void initPixelArt() throws IOException {
 		var brushManager = new BrushManager();
 		var localBrush = new BrushManager.Brush(0, 0, randomColor());
 		var fooBrush = new BrushManager.Brush(0, 0, randomColor());
@@ -30,8 +31,11 @@ public class PixelArt {
 
 		view = new PixelGridView(grid, brushManager, 800, 800);
 
+		//
+
 		view.addMouseMovedListener((x, y) -> {
 			localBrush.updatePosition(x, y);
+
 			try {
 				publisher.publishPositionMessage(new MessagePosition(new Pair<>(x,y), localBrush.getColor()));
 			} catch (IOException e) {
@@ -46,6 +50,7 @@ public class PixelArt {
 		});
 
 		view.addColorChangedListener(localBrush::setColor);
+
 	}
 
 	public void showView(){
@@ -60,5 +65,6 @@ public class PixelArt {
 	public void attachPublisher(final Publisher publisher){
 		this.publisher = publisher;
 	}
+
 
 }

@@ -4,6 +4,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import org.apache.commons.lang3.SerializationUtils;
+import org.project.message.MessageBoot;
 import org.project.message.MessageWelcome;
 import org.project.message.MessageClick;
 import org.project.message.MessagePosition;
@@ -24,6 +25,10 @@ public class Publisher {
 
         this.factory = new ConnectionFactory();
         this.factory.setHost(hostName);
+        factory.setPort(5672);
+        factory.setUsername("davide.boldini");
+        factory.setPassword("Boldini99");
+        factory.setVirtualHost("/");
 
         this.exchangeName = exchangeName;
 
@@ -37,6 +42,11 @@ public class Publisher {
 
     public void publishMessage(final String routingKey, final String message) throws Exception {
         this.channel.basicPublish(exchangeName, routingKey, null, message.getBytes("UTF-8"));
+    }
+
+    public void publishNewConnectionMessage(final MessageBoot message) throws IOException {
+        message.setIdSender(uniqueID);
+        this.channel.basicPublish(exchangeName, Topics.NEW_CONNECTION_TOPIC.name(), null, SerializationUtils.serialize(message));
     }
 
     public void publishBootMessage(final MessageWelcome message) throws IOException {
