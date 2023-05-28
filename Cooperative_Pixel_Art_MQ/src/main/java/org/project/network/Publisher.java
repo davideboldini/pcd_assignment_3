@@ -25,10 +25,10 @@ public class Publisher {
 
         this.factory = new ConnectionFactory();
         this.factory.setHost(hostName);
-        factory.setPort(5672);
-        factory.setUsername("davide.boldini");
-        factory.setPassword("Boldini99");
-        factory.setVirtualHost("/");
+        this.factory.setPort(5672);
+        this.factory.setUsername("davide.boldini");
+        this.factory.setPassword("Boldini99");
+        this.factory.setVirtualHost("/");
 
         this.exchangeName = exchangeName;
 
