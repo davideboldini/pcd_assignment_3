@@ -11,7 +11,6 @@ import org.assignemnt.message.MsgCompleteUpdate;
 import org.assignemnt.message.MsgProtocol;
 import org.assignemnt.utility.Pair;
 
-
 public class GuiActor extends AbstractBehavior<MsgProtocol> {
 
     private final Gui gui;

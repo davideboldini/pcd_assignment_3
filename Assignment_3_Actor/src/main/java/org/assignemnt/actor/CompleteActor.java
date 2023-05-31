@@ -43,7 +43,7 @@ public class CompleteActor extends AbstractBehavior<MsgProtocol> {
         }
         if (msg.getActorRefMap().containsKey("gui_actor")){
             ActorRef<MsgProtocol> guiActor = msg.getActorRefMap().get("gui_actor");
-            guiActor.tell(new MsgComplete());
+            guiActor.tell(new MsgComplete(msg.getActorRefMap()));
         }
         return this;
     }

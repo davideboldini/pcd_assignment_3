@@ -16,8 +16,6 @@ import java.util.concurrent.CompletableFuture;
 public class SourceAnalyzerImpl implements SourceAnalyzer{
 
     private ActorSystem<MsgProtocol> bootSystem;
-    public static int numMsg = 0;
-
 
     public CompletableFuture<Pair<TreeSet<Pair<File,Long>>, Map<Pair<Integer,Integer>, Integer>>> getReport(final Directory dir,
                                                                                                             final int MAXL, final int NI) {

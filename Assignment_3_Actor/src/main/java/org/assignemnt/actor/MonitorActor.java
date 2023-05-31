@@ -8,7 +8,6 @@ import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
 import org.assignemnt.message.*;
 import org.assignemnt.utility.Pair;
-import org.assignemnt.utility.analyzer.SourceAnalyzerImpl;
 
 import java.io.File;
 import java.util.*;
@@ -27,8 +26,11 @@ public class MonitorActor extends AbstractBehavior<MsgProtocol> {
         return newReceiveBuilder()
                 .onMessage(MsgInit.class, this::onMsgInit)
                 .onMessage(MsgFileLength.class, this::onMsgFile)
+                .onMessage(MsgComplete.class, this::onMsgComplete)
                 .build();
     }
+
+
 
     private Behavior<MsgProtocol> onMsgInit(final MsgInit msg){
         log("MAXL: " + msg.getMAXL() + " NI: " + msg.getNI());
@@ -51,17 +53,19 @@ public class MonitorActor extends AbstractBehavior<MsgProtocol> {
             this.addMap(pair.getY());
         }
 
-        SourceAnalyzerImpl.numMsg--;
+        actorRefMap.get("count_actor").tell(new MsgDecrement(actorRefMap));
 
         if (actorRefMap.get("gui_actor") != null) {
             actorRefMap.get("gui_actor").tell(new MsgCompleteUpdate(this.fileLengthTree, this.intervalMap, msg.getActorRefMap()));
         }
 
-        if (SourceAnalyzerImpl.numMsg == 0){
-            ActorRef<MsgProtocol> completeActor = actorRefMap.get("complete_actor");
-            completeActor.tell(new MsgCompleteUpdate(this.fileLengthTree, this.intervalMap, msg.getActorRefMap()));
-        }
+        return this;
+    }
 
+    private Behavior<MsgProtocol> onMsgComplete(final MsgComplete msg) {
+        Map<String, ActorRef<MsgProtocol>> actorRefMap = msg.getActorRefMap();
+        ActorRef<MsgProtocol> completeActor = actorRefMap.get("complete_actor");
+        completeActor.tell(new MsgCompleteUpdate(this.fileLengthTree, this.intervalMap, msg.getActorRefMap()));
         return this;
     }
 

@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class BootActor extends AbstractBehavior<MsgProtocol> {
 
-    private Map<String, ActorRef<MsgProtocol>> actorRefMap;
+    private final Map<String, ActorRef<MsgProtocol>> actorRefMap;
 
     public BootActor(ActorContext<MsgProtocol> context) {
         super(context);
@@ -34,6 +34,7 @@ public class BootActor extends AbstractBehavior<MsgProtocol> {
         ActorRef<MsgProtocol> monitorActor = this.getContext().spawn(MonitorActor.create(), "monitor_actor");
         ActorRef<MsgProtocol> directoryActor = this.getContext().spawn(DirectoryActor.create(), "directory_actor");
         ActorRef<MsgProtocol> fileActor = this.getContext().spawn(FileActor.create(), "file_actor");
+        ActorRef<MsgProtocol> countActor = this.getContext().spawn(CountActor.create(), "count_actor");
 
         ActorRef<MsgProtocol> completeActor;
         if (msg.getFinalResult() != null) {
@@ -51,6 +52,7 @@ public class BootActor extends AbstractBehavior<MsgProtocol> {
         actorRefMap.put("monitor_actor", monitorActor);
         actorRefMap.put("directory_actor", directoryActor);
         actorRefMap.put("file_actor", fileActor);
+        actorRefMap.put("count_actor", countActor);
 
         monitorActor.tell(new MsgInit(msg.getMAXL(), msg.getNI()));
         directoryActor.tell(new MsgDirectory(msg.getStartDirectory(), actorRefMap));
