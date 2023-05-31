@@ -31,7 +31,6 @@ public class CountActor extends AbstractBehavior<MsgProtocol> {
 
     private Behavior<MsgProtocol> onMsgDecrement(final MsgDecrement msg) {
         this.count--;
-        System.out.println(count);
         if (count == 0){
             Map<String, ActorRef<MsgProtocol>> actorRefMap = msg.getActorRefMap();
             ActorRef<MsgProtocol> monitorActor = actorRefMap.get("monitor_actor");
@@ -42,7 +41,6 @@ public class CountActor extends AbstractBehavior<MsgProtocol> {
 
     private Behavior<MsgProtocol> onMsgIncrement(final MsgIncrement msg) {
         this.count++;
-        System.out.println(count);
         return this;
     }
 
