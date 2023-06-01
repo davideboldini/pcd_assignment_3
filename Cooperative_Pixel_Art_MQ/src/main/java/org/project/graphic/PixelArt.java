@@ -23,6 +23,7 @@ public class PixelArt implements Serializable {
 		var fooBrush = new BrushManager.Brush(0, 0, randomColor());
 
 		controller.getBrushController().addBrush(controller.getUniqueID(), fooBrush);
+
 		grid = new PixelGrid(40,40);
 
 		Random rand = new Random();
@@ -34,8 +35,8 @@ public class PixelArt implements Serializable {
 
 		view.addMouseMovedListener((x, y) -> {
 			fooBrush.updatePosition(x,y);
-			controller.getBrushController().updateBrushPosition(controller.getUniqueID(), new Pair<>(x,y), fooBrush.getColor());
-			controller.getNetworkController().newPosition(new Pair<>(x,y), fooBrush.getColor());
+			controller.getBrushController().updateBrushPosition(controller.getUniqueID(), fooBrush);
+			controller.getNetworkController().newPosition(fooBrush);
 			view.refresh();
 		});
 
@@ -56,7 +57,7 @@ public class PixelArt implements Serializable {
 		var fooBrush = new BrushManager.Brush(0, 0, randomColor());
 
 		controller.getBrushController().addBrush(controller.getUniqueID(), fooBrush);
-		controller.getNetworkController().newPosition(new Pair<>(0,0), fooBrush.getColor());
+		controller.getNetworkController().newPosition(fooBrush);
 
 		grid = pixelGrid;
 		view = new PixelGridView(grid, controller.getBrushController().getBrushManager(), 800, 800);
@@ -64,8 +65,8 @@ public class PixelArt implements Serializable {
 		view.addMouseMovedListener((x, y) -> {
 			fooBrush.updatePosition(x, y);
 
-			controller.getBrushController().updateBrushPosition(controller.getUniqueID(), new Pair<>(x,y), fooBrush.getColor());
-			controller.getNetworkController().newPosition(new Pair<>(x,y), fooBrush.getColor());
+			controller.getBrushController().updateBrushPosition(controller.getUniqueID(), fooBrush);
+			controller.getNetworkController().newPosition(fooBrush);
 
 			view.refresh();
 		});
@@ -92,5 +93,9 @@ public class PixelArt implements Serializable {
 
 	public PixelGrid getGrid() {
 		return grid;
+	}
+
+	public PixelGridView getView() {
+		return view;
 	}
 }

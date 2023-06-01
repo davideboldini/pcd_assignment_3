@@ -1,7 +1,6 @@
 package org.project.controller;
 
 import org.project.graphic.BrushManager;
-import org.project.graphic.PixelArt;
 import org.project.graphic.PixelGrid;
 import org.project.message.MessageWelcome;
 import org.project.network.FutureQueue;
@@ -22,7 +21,7 @@ public class Controller {
 
     public Controller(final String uniqueID){
         this.uniqueID = uniqueID;
-        this.brushController = new BrushController();
+        this.brushController = new BrushController(this);
     }
 
     public void initNetworkController(final String exchangeName, final String hostname) throws Exception {
@@ -53,12 +52,13 @@ public class Controller {
         FutureQueue futureQueue = networkController.getFutureQueue();
         networkController.newConnection();
         try {
-            MessageWelcome mex = futureQueue.getFutureWelcome().get(5, TimeUnit.SECONDS);
+            MessageWelcome mexWelcome = futureQueue.getFutureWelcome().get(5, TimeUnit.SECONDS);
 
-            PixelGrid pixelGrid = mex.getCurrentPixelGrid();
-            Map<String, BrushManager.Brush> brushMap = mex.getBrushMap();
+            PixelGrid pixelGrid = mexWelcome.getCurrentPixelGrid();
 
+            Map<String, BrushManager.Brush> brushMap = mexWelcome.getBrushMap();
             brushController.addBrushMap(brushMap);
+
             graphicController.deployExistingPixelArt(pixelGrid);
 
         } catch (TimeoutException | InterruptedException | ExecutionException e) {

@@ -6,10 +6,7 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import org.apache.commons.lang3.SerializationUtils;
 import org.project.controller.NetworkController;
-import org.project.message.MessageBoot;
-import org.project.message.MessageWelcome;
-import org.project.message.MessageClick;
-import org.project.message.MessagePosition;
+import org.project.message.*;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
@@ -50,7 +47,7 @@ public class Publisher {
     public void publishNewConnectionMessage(final MessageBoot message) throws IOException, TimeoutException {
         message.setIdSender(uniqueID);
         channel.basicPublish(exchangeName, Topics.NEW_CONNECTION.name(), null, SerializationUtils.serialize(message));
-        futureQueue.setFutureWelcome(new CompletableFuture<>());;
+        futureQueue.setFutureWelcome(new CompletableFuture<>());
     }
 
     public void publishWelcomeMessage(final MessageWelcome message) throws IOException, TimeoutException {

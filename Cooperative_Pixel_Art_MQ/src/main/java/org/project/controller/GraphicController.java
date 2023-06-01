@@ -28,6 +28,10 @@ public class GraphicController {
         pixelArt.showView();
     }
 
+    public void updateGui() {
+        this.pixelArt.getView().refresh();
+    }
+
     public PixelArt getPixelArt() {
         return this.pixelArt;
     }

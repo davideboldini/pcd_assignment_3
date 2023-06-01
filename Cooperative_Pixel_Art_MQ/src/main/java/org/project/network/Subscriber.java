@@ -3,10 +3,7 @@ package org.project.network;
 import com.rabbitmq.client.*;
 import org.apache.commons.lang3.SerializationUtils;
 import org.project.controller.NetworkController;
-import org.project.message.MessageBoot;
-import org.project.message.MessageClick;
-import org.project.message.MessagePosition;
-import org.project.message.MessageWelcome;
+import org.project.message.*;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -66,28 +63,41 @@ public class Subscriber{
             String routingKey = delivery.getEnvelope().getRoutingKey();
 
             if (routingKey.equals(Topics.NEW_CONNECTION.name())) {
+                try {
+                    MessageBoot message = SerializationUtils.deserialize(delivery.getBody());
 
-                MessageBoot message = SerializationUtils.deserialize(delivery.getBody());
 
-                if (!Objects.equals(message.getIdSender(), uniqueID)){
-                    this.networkController.getController().sendWelcomeMessage();
+                    if (!Objects.equals(message.getIdSender(), uniqueID)){
+                        this.networkController.getController().sendWelcomeMessage();
+                    }
+                    System.out.println("Nuova connessione da: " + message.getIdSender());
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                System.out.println("Nuova connessione da: " + message.getIdSender());
 
             } else if (routingKey.equals(Topics.WELCOME.name())) {
-
-                MessageWelcome message = SerializationUtils.deserialize(delivery.getBody());
-                if (!futureQueue.getFutureWelcome().isDone()) {
-                    futureQueue.getFutureWelcome().complete(message);
+                try {
+                    MessageWelcome message = SerializationUtils.deserialize(delivery.getBody());
+                    if (!futureQueue.getFutureWelcome().isDone()) {
+                        futureQueue.getFutureWelcome().complete(message);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } else if (routingKey.equals(Topics.MOUSE_POSITION.name())) {
+            }
+            else if (routingKey.equals(Topics.MOUSE_POSITION.name())) {
 
-                MessagePosition message = SerializationUtils.deserialize(delivery.getBody());
-                if (!Objects.equals(message.getIdSender(), uniqueID)){
+                try {
+                    MessagePosition message = SerializationUtils.deserialize(delivery.getBody());
+                    if (!Objects.equals(message.getIdSender(), uniqueID)){
 
-                    this.networkController.getController().getBrushController().updateBrushPosition(message.getIdSender(), message.getPosition(), message.getColorBrush());
+                        this.networkController.getController().getBrushController().updateBrushPosition(message.getIdSender(), message.getBrush());
+                    }
+                    System.out.println(message.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                System.out.println(message.toString());
+
 
             } else if (routingKey.equals(Topics.CELL_CLICK.name())) {
 

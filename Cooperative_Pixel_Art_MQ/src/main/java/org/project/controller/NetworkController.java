@@ -2,10 +2,7 @@ package org.project.controller;
 
 import org.project.graphic.BrushManager;
 import org.project.graphic.PixelGrid;
-import org.project.message.MessageBoot;
-import org.project.message.MessageClick;
-import org.project.message.MessagePosition;
-import org.project.message.MessageWelcome;
+import org.project.message.*;
 import org.project.model.Cell;
 import org.project.network.FutureQueue;
 import org.project.network.Publisher;
@@ -60,9 +57,10 @@ public class NetworkController {
         }
     }
 
-    public void newPosition(final Pair<Integer, Integer> position, final int colorBrush){
+
+    public void newPosition(final BrushManager.Brush brush){
         try {
-            this.publisher.publishPositionMessage(new MessagePosition(position, colorBrush));
+            this.publisher.publishPositionMessage(new MessagePosition(brush));
         } catch (IOException | TimeoutException e) {
             throw new RuntimeException(e);
         }

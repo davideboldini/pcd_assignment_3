@@ -1,5 +1,6 @@
 package org.project.message;
 
+import org.project.graphic.BrushManager;
 import org.project.utility.Pair;
 
 import java.io.Serializable;
@@ -7,36 +8,29 @@ import java.io.Serializable;
 public class MessagePosition implements Serializable, MessageProtocol {
 
     private String idSender;
-    private final Pair<Integer,Integer> position;
-    private final int colorBrush;
+    private BrushManager.Brush brush;
 
-    public MessagePosition(final Pair<Integer, Integer> position, final int colorBrush) {
-        this.position = position;
-        this.colorBrush = colorBrush;
+    public MessagePosition(final BrushManager.Brush brush) {
+        this.brush = brush;
     }
 
     public String getIdSender() {
         return this.idSender;
     }
 
-    public Pair<Integer, Integer> getPosition() {
-        return this.position;
-    }
-
-    public int getColorBrush() {
-        return this.colorBrush;
-    }
-
     public void setIdSender(final String idSender) {
         this.idSender = idSender;
+    }
+
+    public BrushManager.Brush getBrush() {
+        return brush;
     }
 
     @Override
     public String toString() {
         return "MessagePosition{" +
                 "idSender='" + idSender + '\'' +
-                ", position=" + position +
-                ", colorBrush=" + colorBrush +
+                ", brush=" + brush +
                 '}';
     }
 }
