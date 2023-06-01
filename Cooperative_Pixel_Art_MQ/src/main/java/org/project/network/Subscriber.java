@@ -41,7 +41,7 @@ public class Subscriber{
     }
 
     public void declareExchange() throws IOException, TimeoutException {
-        channel.exchangeDeclare(exchangeName, "fanout");
+        channel.exchangeDeclare(exchangeName, "direct");
     }
 
     public void declareQueues() throws IOException, TimeoutException {
@@ -49,63 +49,54 @@ public class Subscriber{
     }
 
     public void declareBindings() throws IOException, TimeoutException {
-        channel.queueBind(queue, exchangeName, "");
-        //channel.queueBind(queue, exchangeName, "welcome");
-        //channel.queueBind(queue, exchangeName, "position");
-        //channel.queueBind(queue, exchangeName, "click");
+        channel.queueBind(queue, exchangeName, Topics.NEW_CONNECTION.name());
+        channel.queueBind(queue, exchangeName, Topics.WELCOME.name());
+        channel.queueBind(queue, exchangeName, Topics.MOUSE_POSITION.name());
+        channel.queueBind(queue, exchangeName, Topics.CELL_CLICK.name());
     }
 
     public void subscribeMessage() throws IOException {
-        this.attachNewConnection();
-        //this.attachWelcomeTopic();
-        //this.attachPositionTopic();
-        //this.attachClickTopic();
+        this.attachCallback();
     }
 
 
-    private void attachNewConnection() throws IOException {
-        DeliverCallback newConnectionCallback = ((consumerTag, delivery) -> {
-            MessageBoot message = SerializationUtils.deserialize(delivery.getBody());
-            /*
-            if (!Objects.equals(message.getIdSender(), uniqueID)){
+    private void attachCallback() throws IOException {
+        DeliverCallback callback = ((consumerTag, delivery) -> {
+
+            String routingKey = delivery.getEnvelope().getRoutingKey();
+
+            if (routingKey.equals(Topics.NEW_CONNECTION.name())) {
+
+                MessageBoot message = SerializationUtils.deserialize(delivery.getBody());
+
+                if (!Objects.equals(message.getIdSender(), uniqueID)){
+                    this.networkController.getController().sendWelcomeMessage();
+                }
                 System.out.println("Nuova connessione da: " + message.getIdSender());
-                this.networkController.getController().sendWelcomeMessage();
+
+            } else if (routingKey.equals(Topics.WELCOME.name())) {
+
+                MessageWelcome message = SerializationUtils.deserialize(delivery.getBody());
+                if (!futureQueue.getFutureWelcome().isDone()) {
+                    futureQueue.getFutureWelcome().complete(message);
+                }
+            } else if (routingKey.equals(Topics.MOUSE_POSITION.name())) {
+
+                MessagePosition message = SerializationUtils.deserialize(delivery.getBody());
+                if (!Objects.equals(message.getIdSender(), uniqueID)){
+
+                    this.networkController.getController().getBrushController().updateBrushPosition(message.getIdSender(), message.getPosition(), message.getColorBrush());
+                }
+                System.out.println(message.toString());
+
+            } else if (routingKey.equals(Topics.CELL_CLICK.name())) {
+
+                MessageClick message = SerializationUtils.deserialize(delivery.getBody());
             }
-             */
-            System.out.println("Nuova connessione da: " + message.getIdSender());
+
         });
 
-        channel.basicConsume(queue, true, newConnectionCallback, t -> {});
-    }
-
-
-    private void attachWelcomeTopic() throws IOException {
-        DeliverCallback welcomeCallback = ((consumerTag, delivery) -> {
-            MessageWelcome message = SerializationUtils.deserialize(delivery.getBody());
-            System.out.println(message.toString());
-        });
-
-        channel.basicConsume(queue, true, welcomeCallback, t -> {});
-    }
-
-
-    private void attachPositionTopic() throws IOException {
-        DeliverCallback positionMexCallback = ((consumerTag, delivery) -> {
-            MessagePosition message = SerializationUtils.deserialize(delivery.getBody());
-            System.out.println(message.toString());
-        });
-
-        channel.basicConsume(Topics.MOUSE_POSITION.name(), true, positionMexCallback, consumerTag -> {});
-    }
-
-
-    private void attachClickTopic() throws IOException {
-        DeliverCallback clickMexCallback = ((consumerTag, delivery) -> {
-            MessageClick message = SerializationUtils.deserialize(delivery.getBody());
-            System.out.println(message.toString());
-        });
-
-        channel.basicConsume(Topics.CELL_CLICK.name(), true, clickMexCallback, t -> {});
+        channel.basicConsume(queue, true, callback, t -> {});
     }
 
 }

@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class GraphicController {
 
-    private Controller controller;
+    private final Controller controller;
     private PixelArt pixelArt;
 
     public GraphicController(final Controller controller){
@@ -22,9 +22,9 @@ public class GraphicController {
         pixelArt.showView();
     }
 
-    public void deployExistingPixelArt(final PixelGrid pixelGrid, final Map<String, BrushManager.Brush> brushMap){
+    public void deployExistingPixelArt(final PixelGrid pixelGrid){
         pixelArt = new PixelArt(controller);
-        pixelArt.initExistingPixelArt(pixelGrid, brushMap);
+        pixelArt.initExistingPixelArt(pixelGrid);
         pixelArt.showView();
     }
 

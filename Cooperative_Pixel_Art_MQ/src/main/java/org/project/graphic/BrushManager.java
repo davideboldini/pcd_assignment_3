@@ -2,11 +2,12 @@ package org.project.graphic;
 
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BrushManager {
+public class BrushManager implements Serializable {
     private static final int BRUSH_SIZE = 10;
     private static final int STROKE_SIZE = 2;
     private Map<String, Brush> brushMap = new HashMap<>();
@@ -24,10 +25,10 @@ public class BrushManager {
     }
 
     public void addBrush(final String uniqueID, final Brush brush) {
-        brushMap.put(uniqueID, brush);
+        brushMap.putIfAbsent(uniqueID, brush);
     }
 
-    void removeBrush(final String uniqueID) {
+    public void removeBrush(final String uniqueID) {
         brushMap.remove(uniqueID);
     }
 
@@ -35,7 +36,7 @@ public class BrushManager {
         return brushMap;
     }
 
-    public static class Brush {
+    public static class Brush implements Serializable{
         private int x, y;
         private int color;
 

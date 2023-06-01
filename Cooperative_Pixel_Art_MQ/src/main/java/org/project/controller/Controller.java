@@ -17,10 +17,12 @@ public class Controller {
 
     private GraphicController graphicController;
     private NetworkController networkController;
+    private BrushController brushController;
     private final String uniqueID;
 
     public Controller(final String uniqueID){
         this.uniqueID = uniqueID;
+        this.brushController = new BrushController();
     }
 
     public void initNetworkController(final String exchangeName, final String hostname) throws Exception {
@@ -40,7 +42,14 @@ public class Controller {
         return this.graphicController;
     }
 
+    public BrushController getBrushController() {
+        return this.brushController;
+    }
+
     public void startProgram() throws IOException {
+        Thread brushControllerThread = new Thread(brushController);
+        brushControllerThread.start();
+
         FutureQueue futureQueue = networkController.getFutureQueue();
         networkController.newConnection();
         try {
@@ -49,7 +58,8 @@ public class Controller {
             PixelGrid pixelGrid = mex.getCurrentPixelGrid();
             Map<String, BrushManager.Brush> brushMap = mex.getBrushMap();
 
-            graphicController.deployExistingPixelArt(pixelGrid, brushMap);
+            brushController.addBrushMap(brushMap);
+            graphicController.deployExistingPixelArt(pixelGrid);
 
         } catch (TimeoutException | InterruptedException | ExecutionException e) {
             this.graphicController.deployNewPixelArt();
@@ -58,7 +68,10 @@ public class Controller {
 
     public void sendWelcomeMessage() {
         PixelGrid pixelGrid = this.graphicController.getPixelArt().getGrid();
-        Map<String, BrushManager.Brush> brushMap = new HashMap<>(graphicController.getPixelArt().getBrushManager().getBrushMap());
+        if (pixelGrid == null){
+            System.out.println("NULL");
+        }
+        Map<String, BrushManager.Brush> brushMap = new HashMap<>(brushController.getBrushManager().getBrushMap());
 
         this.networkController.newWelcome(pixelGrid, brushMap);
     }

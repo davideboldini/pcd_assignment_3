@@ -40,7 +40,7 @@ public class Publisher {
         this.connection = factory.newConnection();
         this.channel = connection.createChannel();
 
-        this.channel.exchangeDeclare(exchangeName, "fanout");
+        this.channel.exchangeDeclare(exchangeName, "direct");
     }
 
     public void publishMessage(final String routingKey, final String message) throws Exception {
@@ -49,23 +49,23 @@ public class Publisher {
 
     public void publishNewConnectionMessage(final MessageBoot message) throws IOException, TimeoutException {
         message.setIdSender(uniqueID);
-        channel.basicPublish(exchangeName, "", null, SerializationUtils.serialize(message));
+        channel.basicPublish(exchangeName, Topics.NEW_CONNECTION.name(), null, SerializationUtils.serialize(message));
         futureQueue.setFutureWelcome(new CompletableFuture<>());;
     }
 
     public void publishWelcomeMessage(final MessageWelcome message) throws IOException, TimeoutException {
         message.setIdSender(uniqueID);
-        channel.basicPublish(exchangeName, "", null, SerializationUtils.serialize(message));
+        channel.basicPublish(exchangeName, Topics.WELCOME.name(), null, SerializationUtils.serialize(message));
     }
 
     public void publishPositionMessage(final MessagePosition message) throws IOException, TimeoutException {
         message.setIdSender(uniqueID);
-        channel.basicPublish(exchangeName, "", null, SerializationUtils.serialize(message));
+        channel.basicPublish(exchangeName, Topics.MOUSE_POSITION.name(), null, SerializationUtils.serialize(message));
     }
 
     public void publishClickMessage(final MessageClick message) throws IOException, TimeoutException {
         message.setIdSender(uniqueID);
-        channel.basicPublish(exchangeName, "", null, SerializationUtils.serialize(message));
+        channel.basicPublish(exchangeName, Topics.CELL_CLICK.name(), null, SerializationUtils.serialize(message));
     }
 
     public void closeConnection(){
