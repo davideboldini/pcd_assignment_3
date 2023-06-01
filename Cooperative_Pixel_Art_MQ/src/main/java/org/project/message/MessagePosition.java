@@ -4,7 +4,7 @@ import org.project.utility.Pair;
 
 import java.io.Serializable;
 
-public class MessagePosition implements Serializable {
+public class MessagePosition implements Serializable, MessageProtocol {
 
     private String idSender;
     private final Pair<Integer,Integer> position;

@@ -4,7 +4,7 @@ import org.project.utility.Pair;
 
 import java.io.Serializable;
 
-public class MessageBoot implements Serializable {
+public class MessageBoot implements Serializable, MessageProtocol {
 
     private String idSender;
 

@@ -1,13 +1,13 @@
 package org.project.controller;
 
 import org.project.graphic.BrushManager;
-import org.project.graphic.PixelArt;
 import org.project.graphic.PixelGrid;
 import org.project.message.MessageBoot;
 import org.project.message.MessageClick;
 import org.project.message.MessagePosition;
 import org.project.message.MessageWelcome;
 import org.project.model.Cell;
+import org.project.network.FutureQueue;
 import org.project.network.Publisher;
 import org.project.network.Subscriber;
 import org.project.utility.Pair;
@@ -18,21 +18,28 @@ import java.util.concurrent.TimeoutException;
 
 public class NetworkController {
 
-    private Subscriber subscriber;
-    private Publisher publisher;
+    private final Subscriber subscriber;
+    private final Publisher publisher;
+    private FutureQueue futureQueue;
 
-    public NetworkController(final String uniqueID, final String exchangeName) throws Exception {
-        this.subscriber = new Subscriber(uniqueID, exchangeName, "localhost");
-        this.publisher = new Publisher(uniqueID, exchangeName, "localhost");
+    private String uniqueID;
+    private Controller controller;
+
+    public NetworkController(final String uniqueID, final String exchangeName, final String hostname, final Controller controller) throws Exception {
+        this.futureQueue = new FutureQueue();
+        this.uniqueID = uniqueID;
+        this.subscriber = new Subscriber(uniqueID, exchangeName, hostname, futureQueue, this);
+        this.publisher = new Publisher(uniqueID, exchangeName, hostname, futureQueue, this);
+        this.controller = controller;
     }
 
     public void initSubscriber(){
         try {
-            this.subscriber.attachNewConnectionTopic();
-            this.subscriber.attachBootTopic();
-            this.subscriber.attachPositionTopic();
-            this.subscriber.attachClickTopic();
-        } catch (IOException e) {
+            this.subscriber.declareExchange();
+            this.subscriber.declareQueues();
+            this.subscriber.declareBindings();
+            this.subscriber.subscribeMessage();
+        } catch (IOException | TimeoutException e) {
             throw new RuntimeException(e);
         }
     }
@@ -40,15 +47,15 @@ public class NetworkController {
     public void newConnection(){
         try {
             this.publisher.publishNewConnectionMessage(new MessageBoot());
-        } catch (IOException e) {
+        } catch (IOException | TimeoutException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void newWelcome(final PixelGrid pixelArt, final Map<String, BrushManager.Brush> brushMap){
         try {
-            this.publisher.publishBootMessage(new MessageWelcome(pixelArt, brushMap));
-        } catch (IOException e) {
+            this.publisher.publishWelcomeMessage(new MessageWelcome(pixelArt, brushMap));
+        } catch (IOException | TimeoutException e) {
             throw new RuntimeException(e);
         }
     }
@@ -56,7 +63,7 @@ public class NetworkController {
     public void newPosition(final Pair<Integer, Integer> position, final int colorBrush){
         try {
             this.publisher.publishPositionMessage(new MessagePosition(position, colorBrush));
-        } catch (IOException e) {
+        } catch (IOException | TimeoutException e) {
             throw new RuntimeException(e);
         }
     }
@@ -64,8 +71,16 @@ public class NetworkController {
     public void newClick(final Pair<Integer, Integer> position, final int colorBrush){
         try {
             this.publisher.publishClickMessage(new MessageClick(new Cell(position.getX(), position.getY(), colorBrush)));
-        } catch (IOException e) {
+        } catch (IOException | TimeoutException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public FutureQueue getFutureQueue() {
+        return futureQueue;
+    }
+
+    public Controller getController() {
+        return controller;
     }
 }

@@ -2,15 +2,17 @@ package org.project.graphic;
 
 
 import java.awt.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BrushManager {
     private static final int BRUSH_SIZE = 10;
     private static final int STROKE_SIZE = 2;
-    private List<Brush> brushes = new java.util.ArrayList<>();
+    private Map<String, Brush> brushMap = new HashMap<>();
 
     void draw(final Graphics2D g) {
-        brushes.forEach(brush -> {
+        brushMap.values().forEach(brush -> {
             g.setColor(new Color(brush.color));
             var circle = new java.awt.geom.Ellipse2D.Double(brush.x - BRUSH_SIZE / 2.0, brush.y - BRUSH_SIZE / 2.0, BRUSH_SIZE, BRUSH_SIZE);
             // draw the polygon
@@ -21,12 +23,16 @@ public class BrushManager {
         });
     }
 
-    public void addBrush(final Brush brush) {
-        brushes.add(brush);
+    public void addBrush(final String uniqueID, final Brush brush) {
+        brushMap.put(uniqueID, brush);
     }
 
-    void removeBrush(final Brush brush) {
-        brushes.remove(brush);
+    void removeBrush(final String uniqueID) {
+        brushMap.remove(uniqueID);
+    }
+
+    public Map<String, Brush> getBrushMap(){
+        return brushMap;
     }
 
     public static class Brush {

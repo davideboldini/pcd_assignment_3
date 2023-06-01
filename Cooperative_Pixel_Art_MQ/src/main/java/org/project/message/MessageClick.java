@@ -4,7 +4,7 @@ import org.project.model.Cell;
 
 import java.io.Serializable;
 
-public class MessageClick implements Serializable {
+public class MessageClick implements Serializable, MessageProtocol {
 
     private String idSender;
     private final Cell cellClicked;

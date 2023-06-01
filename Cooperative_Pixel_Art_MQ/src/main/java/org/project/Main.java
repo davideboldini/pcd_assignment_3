@@ -1,14 +1,14 @@
 package org.project;
 
+import org.project.controller.Controller;
+import org.project.controller.GraphicController;
 import org.project.controller.NetworkController;
 import org.project.graphic.PixelArt;
-import org.project.message.MessageBoot;
-import org.project.network.Publisher;
-import org.project.network.Subscriber;
-import org.project.utility.Pair;
+import org.project.message.MessageWelcome;
+import org.project.network.FutureQueue;
 
-import java.io.IOException;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class Main {
@@ -19,12 +19,12 @@ public class Main {
         String exchangeName = "Coop-Pixel-Art";
         String hostname = "localhost";
 
-        NetworkController networkController = new NetworkController(uniqueID, exchangeName);
-        networkController.initSubscriber();
+        Controller controller = new Controller(uniqueID);
+        controller.initNetworkController(exchangeName, hostname);
+        controller.initGraphicController();
 
-        PixelArt pixelArt = new PixelArt();
-        pixelArt.attachController(networkController);
-        pixelArt.initPixelArt();
-        pixelArt.showView();
+        controller.startProgram();
+
+
     }
 }

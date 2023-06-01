@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MessageWelcome implements Serializable {
+public class MessageWelcome implements Serializable, MessageProtocol {
 
     private String idSender;
     private PixelGrid currentPixelGrid;

@@ -1,29 +1,31 @@
 package org.project.graphic;
 
+import org.project.controller.Controller;
 import org.project.controller.NetworkController;
-import org.project.graphic.BrushManager;
-import org.project.graphic.PixelGrid;
-import org.project.graphic.PixelGridView;
-import org.project.message.MessageBoot;
-import org.project.message.MessagePosition;
-import org.project.network.Publisher;
 import org.project.utility.Pair;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Random;
 
 public class PixelArt {
 
 	private PixelGridView view;
-	private NetworkController networkController;
+	private PixelGrid grid;
+	private BrushManager brushManager;
+	private Controller controller;
 
-	public void initPixelArt() throws IOException {
-		var brushManager = new BrushManager();
-		var localBrush = new BrushManager.Brush(0, 0, randomColor());
+	public PixelArt(final Controller controller){
+		this.controller = controller;
+	}
+
+	public void initNewPixelArt() throws IOException {
+		brushManager = new BrushManager();
+		//var localBrush = new BrushManager.Brush(0, 0, randomColor());
 		var fooBrush = new BrushManager.Brush(0, 0, randomColor());
-		brushManager.addBrush(localBrush);
-		brushManager.addBrush(fooBrush);
-		PixelGrid grid = new PixelGrid(40,40);
+		//brushManager.addBrush(controller.getUniqueID(), localBrush);
+		brushManager.addBrush(controller.getUniqueID(), fooBrush);
+		grid = new PixelGrid(40,40);
 
 		Random rand = new Random();
 		for (int i = 0; i < 10; i++) {
@@ -32,20 +34,48 @@ public class PixelArt {
 
 		view = new PixelGridView(grid, brushManager, 800, 800);
 
-
 		view.addMouseMovedListener((x, y) -> {
-			localBrush.updatePosition(x, y);
-			networkController.newPosition(new Pair<>(x,y), localBrush.getColor());
+			//localBrush.updatePosition(x, y);
+			fooBrush.updatePosition(x,y);
+			controller.getNetworkController().newPosition(new Pair<>(x,y), fooBrush.getColor());
 			view.refresh();
 		});
 
 		view.addPixelGridEventListener((x, y) -> {
-			grid.set(x, y, localBrush.getColor());
+			grid.set(x, y, fooBrush.getColor());
 			view.refresh();
 		});
 
-		view.addColorChangedListener(localBrush::setColor);
+		view.addColorChangedListener(fooBrush::setColor);
 
+	}
+
+	public void initExistingPixelArt(final PixelGrid pixelGrid, final Map<String, BrushManager.Brush> brushMap){
+		brushManager = new BrushManager();
+
+		for (Map.Entry<String, BrushManager.Brush> entry : brushMap.entrySet()) {
+			brushManager.addBrush(entry.getKey(), entry.getValue());
+		}
+		//var localBrush = new BrushManager.Brush(0, 0, randomColor());
+		var fooBrush = new BrushManager.Brush(0, 0, randomColor());
+		//brushManager.addBrush(controller.getUniqueID(), localBrush);
+		brushManager.addBrush(controller.getUniqueID(), fooBrush);
+		grid = pixelGrid;
+
+		view = new PixelGridView(grid, brushManager, 800, 800);
+
+		view.addMouseMovedListener((x, y) -> {
+			fooBrush.updatePosition(x, y);
+			//controller.getNetworkController().newPosition(new Pair<>(x,y), fooBrush.getColor());
+			view.refresh();
+		});
+
+		view.addPixelGridEventListener((x, y) -> {
+			grid.set(x, y, fooBrush.getColor());
+			view.refresh();
+		});
+
+		view.addColorChangedListener(fooBrush::setColor);
 	}
 
 	public void showView(){
@@ -57,10 +87,11 @@ public class PixelArt {
 		return rand.nextInt(256 * 256 * 256);
 	}
 
-	public void attachController(final NetworkController networkController){
-		this.networkController = networkController;
-		this.networkController.newConnection();
+	public PixelGrid getGrid() {
+		return grid;
 	}
 
-
+	public BrushManager getBrushManager() {
+		return brushManager;
+	}
 }
