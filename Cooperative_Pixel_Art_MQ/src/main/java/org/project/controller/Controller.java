@@ -2,11 +2,10 @@ package org.project.controller;
 
 import org.project.controller.brush.BrushController;
 import org.project.controller.graphic.GraphicController;
+import org.project.controller.network.FutureQueue;
 import org.project.controller.network.NetworkController;
 import org.project.graphic.BrushManager;
 import org.project.graphic.PixelGrid;
-import org.project.model.message.MessageWelcome;
-import org.project.controller.network.FutureQueue;
 import org.project.utility.Pair;
 
 import java.io.IOException;

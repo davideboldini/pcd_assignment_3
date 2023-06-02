@@ -2,7 +2,6 @@ package org.project.controller.brush;
 
 import org.project.controller.Controller;
 import org.project.graphic.BrushManager;
-import org.project.utility.Pair;
 
 import java.util.Map;
 

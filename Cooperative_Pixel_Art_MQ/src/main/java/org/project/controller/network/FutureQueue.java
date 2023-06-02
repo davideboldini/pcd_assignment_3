@@ -2,7 +2,6 @@ package org.project.controller.network;
 
 import org.project.graphic.BrushManager;
 import org.project.graphic.PixelGrid;
-import org.project.model.message.MessageWelcome;
 import org.project.utility.Pair;
 
 import java.util.Map;

@@ -3,13 +3,12 @@ package org.project.graphic;
 import java.awt.*;
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class BrushManager implements Serializable {
     private static final int BRUSH_SIZE = 10;
     private static final int STROKE_SIZE = 2;
-    private Map<String, Brush> brushMap = new HashMap<>();
+    private final Map<String, Brush> brushMap = new HashMap<>();
 
     void draw(final Graphics2D g) {
         brushMap.values().forEach(brush -> {
