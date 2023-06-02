@@ -1,9 +1,13 @@
 package org.project.controller;
 
+import org.project.controller.brush.BrushController;
+import org.project.controller.graphic.GraphicController;
+import org.project.controller.network.NetworkController;
 import org.project.graphic.BrushManager;
 import org.project.graphic.PixelGrid;
-import org.project.message.MessageWelcome;
-import org.project.network.FutureQueue;
+import org.project.model.message.MessageWelcome;
+import org.project.controller.network.FutureQueue;
+import org.project.utility.Pair;
 
 import java.io.IOException;
 import java.util.Map;
@@ -43,21 +47,23 @@ public class Controller {
         brushControllerThread.start();
 
         FutureQueue futureQueue = networkController.getFutureQueue();
-        networkController.newConnection();
+        this.networkController.newConnection();
         try {
             System.out.println("Controllo della presenza di altri utenti...");
-            MessageWelcome mexWelcome = futureQueue.getFutureWelcome().get(3, TimeUnit.SECONDS);
+
+            Pair<PixelGrid, Map<String, BrushManager.Brush>> welcomePair = futureQueue.getFutureWelcome().get(3, TimeUnit.SECONDS);
+
             System.out.println("Utente trovato!");
 
-            PixelGrid pixelGrid = mexWelcome.getCurrentPixelGrid();
+            PixelGrid pixelGrid = welcomePair.getX();
+            Map<String, BrushManager.Brush> brushMap = welcomePair.getY();
 
-            Map<String, BrushManager.Brush> brushMap = mexWelcome.getBrushMap();
-            graphicController.deployExistingPixelArt(pixelGrid);
+            graphicController.deployPixelArt(pixelGrid);
             brushController.addBrushMap(brushMap);
 
         } catch (TimeoutException | InterruptedException | ExecutionException e) {
             System.out.println("Nessun utente trovato");
-            this.graphicController.deployNewPixelArt();
+            this.graphicController.deployPixelArt();
         }
     }
 

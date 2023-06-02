@@ -1,5 +1,6 @@
-package org.project.controller;
+package org.project.controller.brush;
 
+import org.project.controller.Controller;
 import org.project.graphic.BrushManager;
 import org.project.utility.Pair;
 
@@ -7,9 +8,8 @@ import java.util.Map;
 
 public class BrushController implements Runnable{
 
-
-    private BrushManager brushManager;
-    private Controller controller;
+    private final BrushManager brushManager;
+    private final Controller controller;
 
     public BrushController(final Controller controller) {
         this.brushManager = new BrushManager();
@@ -18,19 +18,19 @@ public class BrushController implements Runnable{
 
     public void addBrush(final String uniqueID, final BrushManager.Brush brush) {
         this.brushManager.addBrush(uniqueID, brush);
-        controller.getGraphicController().getPixelArt().getView().addUserToTable(uniqueID, brush.getColor());
+        this.controller.getGraphicController().getPixelArt().getView().addUserToTable(uniqueID, brush.getColor());
     }
 
     public void addBrushMap(final Map<String, BrushManager.Brush> brushMap){
         for (Map.Entry<String, BrushManager.Brush> entry : brushMap.entrySet()) {
-            brushManager.addBrush(entry.getKey(), entry.getValue());
-            controller.getGraphicController().getPixelArt().getView().addUserToTable(entry.getKey(), entry.getValue().getColor());
+            this.brushManager.addBrush(entry.getKey(), entry.getValue());
+            this.controller.getGraphicController().getPixelArt().getView().addUserToTable(entry.getKey(), entry.getValue().getColor());
         }
     }
 
     public void removeBrush(final String uniqueID) {
         this.brushManager.removeBrush(uniqueID);
-        controller.getGraphicController().getPixelArt().getView().removeUserToTable(uniqueID);
+        this.controller.getGraphicController().getPixelArt().getView().removeUserToTable(uniqueID);
     }
 
     public void updateBrushPosition(final String uniqueID, final BrushManager.Brush brush) {

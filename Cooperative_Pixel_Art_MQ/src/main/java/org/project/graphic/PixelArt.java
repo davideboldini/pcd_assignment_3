@@ -21,7 +21,6 @@ public class PixelArt implements Serializable {
 	}
 
 	public void initPixelArt(PixelGrid... grids) throws IOException {
-		var fooBrush = new BrushManager.Brush(0, 0, randomColor());
 
 		if (grids.length == 0) {
 			grid = new PixelGrid(40,40);
@@ -33,6 +32,7 @@ public class PixelArt implements Serializable {
 			grid = Arrays.stream(grids).findFirst().get();
 		}
 
+		var fooBrush = new BrushManager.Brush(0, 0, randomColor());
 		view = new PixelGridView(grid, controller.getBrushController().getBrushManager(), 800, 800);
 		controller.getBrushController().addBrush(controller.getUniqueID(), fooBrush);
 

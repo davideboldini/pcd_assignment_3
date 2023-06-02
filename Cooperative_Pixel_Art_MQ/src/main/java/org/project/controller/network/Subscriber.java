@@ -1,29 +1,26 @@
-package org.project.network;
+package org.project.controller.network;
 
 import com.rabbitmq.client.*;
 import org.apache.commons.lang3.SerializationUtils;
-import org.project.controller.NetworkController;
-import org.project.message.*;
 import org.project.model.Cell;
+import org.project.model.Topics;
+import org.project.model.message.*;
+import org.project.utility.Pair;
 
 import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 
-import static org.project.network.Topics.NEW_CONNECTION;
-
 public class Subscriber{
 
-    private String uniqueID;
-    private String exchangeName;
+    private final String uniqueID;
+    private final String exchangeName;
     private String queue;
 
-    private FutureQueue futureQueue;
-    private NetworkController networkController;
+    private final FutureQueue futureQueue;
+    private final NetworkController networkController;
 
-    private ConnectionFactory factory;
-    private Channel channel;
-    private Connection connection;
+    private final Channel channel;
 
     public Subscriber(final String uniqueID, final String exchangeName, final String hostName, final FutureQueue futureQueue,
                       final NetworkController networkController) throws IOException, TimeoutException {
@@ -32,10 +29,10 @@ public class Subscriber{
         this.networkController = networkController;
         this.exchangeName = exchangeName;
 
-        this.factory = new ConnectionFactory();
-        this.factory.setHost(hostName);
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost(hostName);
 
-        this.connection = factory.newConnection();
+        Connection connection = factory.newConnection();
         this.channel = connection.createChannel();
 
     }
@@ -77,7 +74,7 @@ public class Subscriber{
                     try {
                         MessageWelcome message = SerializationUtils.deserialize(delivery.getBody());
                         if (!futureQueue.getFutureWelcome().isDone()) {
-                            futureQueue.getFutureWelcome().complete(message);
+                            futureQueue.getFutureWelcome().complete(new Pair<>(message.getCurrentPixelGrid(), message.getBrushMap()));
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -115,6 +112,7 @@ public class Subscriber{
                         e.printStackTrace();
                     }
                 }
+                default -> throw new IllegalStateException("Unexpected value: " + Topics.valueOf(routingKey));
             }
 
         });

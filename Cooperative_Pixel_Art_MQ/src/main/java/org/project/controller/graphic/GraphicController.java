@@ -1,5 +1,6 @@
-package org.project.controller;
+package org.project.controller.graphic;
 
+import org.project.controller.Controller;
 import org.project.graphic.PixelArt;
 import org.project.graphic.PixelGrid;
 
@@ -14,15 +15,9 @@ public class GraphicController {
         this.controller = controller;
     }
 
-    public void deployNewPixelArt() throws IOException {
+    public void deployPixelArt(final PixelGrid... pixelGrids) throws IOException {
         pixelArt = new PixelArt(controller);
-        pixelArt.initPixelArt();
-        pixelArt.showView();
-    }
-
-    public void deployExistingPixelArt(final PixelGrid pixelGrid) throws IOException {
-        pixelArt = new PixelArt(controller);
-        pixelArt.initPixelArt(pixelGrid);
+        pixelArt.initPixelArt(pixelGrids);
         pixelArt.showView();
     }
 

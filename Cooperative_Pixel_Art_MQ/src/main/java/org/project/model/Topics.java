@@ -1,4 +1,4 @@
-package org.project.network;
+package org.project.model;
 
 import java.io.Serializable;
 

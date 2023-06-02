@@ -1,6 +1,6 @@
-package org.project.message;
+package org.project.model.message;
 
-public class MessageClose extends MessageBoot {
+public class MessageClose extends Message {
 
     public MessageClose(){
         super();

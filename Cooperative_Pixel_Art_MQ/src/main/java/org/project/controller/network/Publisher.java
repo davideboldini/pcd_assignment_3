@@ -1,11 +1,11 @@
-package org.project.network;
+package org.project.controller.network;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import org.apache.commons.lang3.SerializationUtils;
-import org.project.controller.NetworkController;
-import org.project.message.*;
+import org.project.model.Topics;
+import org.project.model.message.*;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;

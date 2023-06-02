@@ -1,12 +1,10 @@
-package org.project.controller;
+package org.project.controller.network;
 
+import org.project.controller.Controller;
 import org.project.graphic.BrushManager;
 import org.project.graphic.PixelGrid;
-import org.project.message.*;
 import org.project.model.Cell;
-import org.project.network.FutureQueue;
-import org.project.network.Publisher;
-import org.project.network.Subscriber;
+import org.project.model.message.*;
 import org.project.utility.Pair;
 
 import java.io.IOException;
@@ -17,14 +15,11 @@ public class NetworkController {
 
     private final Subscriber subscriber;
     private final Publisher publisher;
-    private FutureQueue futureQueue;
-
-    private String uniqueID;
-    private Controller controller;
+    private final FutureQueue futureQueue;
+    private final Controller controller;
 
     public NetworkController(final String uniqueID, final String exchangeName, final String hostname, final Controller controller) throws Exception {
         this.futureQueue = new FutureQueue();
-        this.uniqueID = uniqueID;
         this.subscriber = new Subscriber(uniqueID, exchangeName, hostname, futureQueue, this);
         this.publisher = new Publisher(uniqueID, exchangeName, hostname, futureQueue, this);
         this.controller = controller;
@@ -57,7 +52,6 @@ public class NetworkController {
         }
     }
 
-
     public void newPosition(final BrushManager.Brush brush){
         try {
             this.publisher.publishPositionMessage(new MessagePosition(brush));
@@ -83,10 +77,10 @@ public class NetworkController {
     }
 
     public FutureQueue getFutureQueue() {
-        return futureQueue;
+        return this.futureQueue;
     }
 
     public Controller getController() {
-        return controller;
+        return this.controller;
     }
 }

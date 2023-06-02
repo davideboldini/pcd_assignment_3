@@ -1,15 +1,8 @@
 package org.project;
 
 import org.project.controller.Controller;
-import org.project.controller.GraphicController;
-import org.project.controller.NetworkController;
-import org.project.graphic.PixelArt;
-import org.project.message.MessageWelcome;
-import org.project.network.FutureQueue;
 
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class Main {
 

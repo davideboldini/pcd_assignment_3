@@ -1,34 +1,25 @@
-package org.project.message;
+package org.project.model.message;
 
 import org.project.model.Cell;
 
-import java.io.Serializable;
 
-public class MessageClick implements Serializable, MessageProtocol {
+public class MessageClick extends Message {
 
-    private String idSender;
     private final Cell cellClicked;
 
     public MessageClick(final Cell cellClicked){
+        super();
         this.cellClicked = cellClicked;
-    }
-
-    public String getIdSender() {
-        return this.idSender;
     }
 
     public Cell getCellClicked() {
         return this.cellClicked;
     }
 
-    public void setIdSender(final String idSender) {
-        this.idSender = idSender;
-    }
-
     @Override
     public String toString() {
         return "MessageClick{" +
-                "idSender='" + idSender + '\'' +
+                "idSender='" + super.getIdSender() + '\'' +
                 ", cellClicked=" + cellClicked +
                 '}';
     }

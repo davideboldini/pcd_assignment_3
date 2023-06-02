@@ -1,19 +1,18 @@
-package org.project.message;
+package org.project.model.message;
 
 import org.project.graphic.BrushManager;
 import org.project.graphic.PixelGrid;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MessageWelcome implements Serializable, MessageProtocol {
+public class MessageWelcome extends Message {
 
-    private String idSender;
-    private PixelGrid currentPixelGrid;
-    private Map<String, BrushManager.Brush> brushMap;
+    private final PixelGrid currentPixelGrid;
+    private final Map<String, BrushManager.Brush> brushMap;
 
     public MessageWelcome(final PixelGrid currentPixelGrid, final Map<String, BrushManager.Brush> brushMap){
+        super();
         this.currentPixelGrid = currentPixelGrid;
         this.brushMap = new HashMap<>(brushMap);
     }
@@ -26,18 +25,10 @@ public class MessageWelcome implements Serializable, MessageProtocol {
         return this.brushMap;
     }
 
-    public String getIdSender() {
-        return this.idSender;
-    }
-
-    public void setIdSender(final String idSender) {
-        this.idSender = idSender;
-    }
-
     @Override
     public String toString() {
         return "MessageBoot{" +
-                "idSender='" + idSender + '\'' +
+                "idSender='" + super.getIdSender() + '\'' +
                 ", currentPixelGrid=" + currentPixelGrid +
                 '}';
     }
