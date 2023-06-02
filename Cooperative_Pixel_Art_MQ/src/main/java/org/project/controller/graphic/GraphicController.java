@@ -4,7 +4,6 @@ import org.project.controller.Controller;
 import org.project.graphic.PixelArt;
 import org.project.graphic.PixelGrid;
 
-import java.io.IOException;
 
 public class GraphicController {
 
@@ -15,7 +14,7 @@ public class GraphicController {
         this.controller = controller;
     }
 
-    public void deployPixelArt(final PixelGrid... pixelGrids) throws IOException {
+    public void deployPixelArt(final PixelGrid... pixelGrids) {
         pixelArt = new PixelArt(controller);
         pixelArt.initPixelArt(pixelGrids);
         pixelArt.showView();

@@ -5,7 +5,6 @@ import org.project.utility.Pair;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Random;
@@ -14,13 +13,13 @@ public class PixelArt implements Serializable {
 
 	private PixelGridView view;
 	private PixelGrid grid;
-	private Controller controller;
+	private final Controller controller;
 
 	public PixelArt(final Controller controller){
 		this.controller = controller;
 	}
 
-	public void initPixelArt(PixelGrid... grids) throws IOException {
+	public void initPixelArt(PixelGrid... grids) {
 
 		if (grids.length == 0) {
 			grid = new PixelGrid(40,40);

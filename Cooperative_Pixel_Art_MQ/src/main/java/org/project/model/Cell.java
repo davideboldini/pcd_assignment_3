@@ -4,9 +4,9 @@ import java.io.Serializable;
 
 public class Cell implements Serializable {
 
-    private int x;
-    private int y;
-    private int color;
+    private final int x;
+    private final int y;
+    private final int color;
 
     public Cell(final int x, final int y, final int color){
         this.x = x;

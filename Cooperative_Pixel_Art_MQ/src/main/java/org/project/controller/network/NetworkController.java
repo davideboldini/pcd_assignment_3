@@ -21,7 +21,7 @@ public class NetworkController {
     public NetworkController(final String uniqueID, final String exchangeName, final String hostname, final Controller controller) throws Exception {
         this.futureWelcome = new FutureWelcome();
         this.subscriber = new Subscriber(uniqueID, exchangeName, hostname, futureWelcome, this);
-        this.publisher = new Publisher(uniqueID, exchangeName, hostname, futureWelcome, this);
+        this.publisher = new Publisher(uniqueID, exchangeName, hostname, futureWelcome);
         this.controller = controller;
     }
 

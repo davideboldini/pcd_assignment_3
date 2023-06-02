@@ -20,7 +20,7 @@ public class Publisher {
 
     private final FutureWelcome futureWelcome;
 
-    public Publisher(final String uniqueID, final String exchangeName, final String hostName, final FutureWelcome futureWelcome, final NetworkController networkController) throws Exception {
+    public Publisher(final String uniqueID, final String exchangeName, final String hostName, final FutureWelcome futureWelcome) throws Exception {
 
         this.uniqueID = uniqueID;
         this.exchangeName = exchangeName;

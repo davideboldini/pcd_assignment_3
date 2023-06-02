@@ -139,7 +139,7 @@ public class PixelGridView extends JFrame {
 
 	public void removeUserToTable(final String uniqueID) {
 		for (int i = 0; i < dtm.getRowCount(); i++) {
-			if (((String)dtm.getValueAt(i, 0)).equals(uniqueID)) {
+			if ((dtm.getValueAt(i, 0)).equals(uniqueID)) {
 				dtm.removeRow(i);
 				break;
 			}
@@ -149,7 +149,7 @@ public class PixelGridView extends JFrame {
 
 	public void updateColorUser(final String uniqueID, final int color) {
 		for (int i = 0; i < dtm.getRowCount(); i++) {
-			if (((String)dtm.getValueAt(i, 0)).equals(uniqueID)) {
+			if ((dtm.getValueAt(i, 0)).equals(uniqueID)) {
 				dtm.setValueAt(color, i,1);
 				break;
 			}

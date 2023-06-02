@@ -8,7 +8,6 @@ import org.project.graphic.BrushManager;
 import org.project.graphic.PixelGrid;
 import org.project.utility.Pair;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -41,7 +40,7 @@ public class Controller {
         return this.brushController;
     }
 
-    public void startProgram() throws IOException {
+    public void startProgram() {
         Thread brushControllerThread = new Thread(brushController);
         brushControllerThread.start();
 
