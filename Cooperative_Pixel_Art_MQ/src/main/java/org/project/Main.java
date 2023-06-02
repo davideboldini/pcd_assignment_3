@@ -19,12 +19,8 @@ public class Main {
         String exchangeName = "Coop-Pixel-Art";
         String hostname = "localhost";
 
-        Controller controller = new Controller(uniqueID);
-        controller.initNetworkController(exchangeName, hostname);
-        controller.initGraphicController();
-
+        Controller controller = new Controller(uniqueID, exchangeName, hostname);
         controller.startProgram();
-
 
     }
 }

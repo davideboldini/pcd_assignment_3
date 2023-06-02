@@ -35,7 +35,7 @@ public class NetworkController {
             this.subscriber.declareExchange();
             this.subscriber.declareQueues();
             this.subscriber.declareBindings();
-            this.subscriber.subscribeMessage();
+            this.subscriber.attachCallback();
         } catch (IOException | TimeoutException e) {
             throw new RuntimeException(e);
         }
@@ -69,6 +69,14 @@ public class NetworkController {
     public void newClick(final Pair<Integer, Integer> position, final int colorBrush){
         try {
             this.publisher.publishClickMessage(new MessageClick(new Cell(position.getX(), position.getY(), colorBrush)));
+        } catch (IOException | TimeoutException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void newClose(){
+        try {
+            this.publisher.publishCloseMessage(new MessageClose());
         } catch (IOException | TimeoutException e) {
             throw new RuntimeException(e);
         }

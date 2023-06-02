@@ -18,16 +18,19 @@ public class BrushController implements Runnable{
 
     public void addBrush(final String uniqueID, final BrushManager.Brush brush) {
         this.brushManager.addBrush(uniqueID, brush);
+        controller.getGraphicController().getPixelArt().getView().addUserToTable(uniqueID, brush.getColor());
     }
 
     public void addBrushMap(final Map<String, BrushManager.Brush> brushMap){
         for (Map.Entry<String, BrushManager.Brush> entry : brushMap.entrySet()) {
             brushManager.addBrush(entry.getKey(), entry.getValue());
+            controller.getGraphicController().getPixelArt().getView().addUserToTable(entry.getKey(), entry.getValue().getColor());
         }
     }
 
     public void removeBrush(final String uniqueID) {
         this.brushManager.removeBrush(uniqueID);
+        controller.getGraphicController().getPixelArt().getView().removeUserToTable(uniqueID);
     }
 
     public void updateBrushPosition(final String uniqueID, final BrushManager.Brush brush) {
@@ -44,6 +47,7 @@ public class BrushController implements Runnable{
 
     public void updateBrushColor(final String uniqueID, final int color) {
         this.brushManager.getBrushMap().get(uniqueID).setColor(color);
+        this.controller.getGraphicController().getPixelArt().getView().updateColorUser(uniqueID, color);
     }
 
     public BrushManager getBrushManager() {

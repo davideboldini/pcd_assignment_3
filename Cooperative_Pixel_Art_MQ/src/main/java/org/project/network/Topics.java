@@ -1,5 +1,7 @@
 package org.project.network;
 
-public enum Topics {
-    NEW_CONNECTION, WELCOME, MOUSE_POSITION, CELL_CLICK;
+import java.io.Serializable;
+
+public enum Topics implements Serializable {
+    NEW_CONNECTION, WELCOME, MOUSE_POSITION, CELL_CLICK, CLOSE;
 }

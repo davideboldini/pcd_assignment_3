@@ -4,10 +4,13 @@ import com.rabbitmq.client.*;
 import org.apache.commons.lang3.SerializationUtils;
 import org.project.controller.NetworkController;
 import org.project.message.*;
+import org.project.model.Cell;
 
 import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.TimeoutException;
+
+import static org.project.network.Topics.NEW_CONNECTION;
 
 public class Subscriber{
 
@@ -42,7 +45,7 @@ public class Subscriber{
     }
 
     public void declareQueues() throws IOException, TimeoutException {
-        queue = this.channel.queueDeclare(uniqueID, false, true, false, null).getQueue();
+        queue = channel.queueDeclare(uniqueID, false, true, false, null).getQueue();
     }
 
     public void declareBindings() throws IOException, TimeoutException {
@@ -50,58 +53,68 @@ public class Subscriber{
         channel.queueBind(queue, exchangeName, Topics.WELCOME.name());
         channel.queueBind(queue, exchangeName, Topics.MOUSE_POSITION.name());
         channel.queueBind(queue, exchangeName, Topics.CELL_CLICK.name());
+        channel.queueBind(queue, exchangeName, Topics.CLOSE.name());
     }
 
-    public void subscribeMessage() throws IOException {
-        this.attachCallback();
-    }
-
-
-    private void attachCallback() throws IOException {
+    public void attachCallback() throws IOException {
         DeliverCallback callback = ((consumerTag, delivery) -> {
 
             String routingKey = delivery.getEnvelope().getRoutingKey();
 
-            if (routingKey.equals(Topics.NEW_CONNECTION.name())) {
-                try {
-                    MessageBoot message = SerializationUtils.deserialize(delivery.getBody());
-
-
-                    if (!Objects.equals(message.getIdSender(), uniqueID)){
-                        this.networkController.getController().sendWelcomeMessage();
+            switch (Topics.valueOf(routingKey)) {
+                case NEW_CONNECTION -> {
+                    try {
+                        MessageBoot message = SerializationUtils.deserialize(delivery.getBody());
+                        if (!Objects.equals(message.getIdSender(), uniqueID)) {
+                            this.networkController.newWelcome(this.networkController.getController().getGraphicController().getPixelArt().getGrid(),
+                                    this.networkController.getController().getBrushController().getBrushManager().getBrushMap());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    System.out.println("Nuova connessione da: " + message.getIdSender());
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
-
-            } else if (routingKey.equals(Topics.WELCOME.name())) {
-                try {
-                    MessageWelcome message = SerializationUtils.deserialize(delivery.getBody());
-                    if (!futureQueue.getFutureWelcome().isDone()) {
-                        futureQueue.getFutureWelcome().complete(message);
+                case WELCOME -> {
+                    try {
+                        MessageWelcome message = SerializationUtils.deserialize(delivery.getBody());
+                        if (!futureQueue.getFutureWelcome().isDone()) {
+                            futureQueue.getFutureWelcome().complete(message);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
-            }
-            else if (routingKey.equals(Topics.MOUSE_POSITION.name())) {
-
-                try {
-                    MessagePosition message = SerializationUtils.deserialize(delivery.getBody());
-                    if (!Objects.equals(message.getIdSender(), uniqueID)){
-
-                        this.networkController.getController().getBrushController().updateBrushPosition(message.getIdSender(), message.getBrush());
+                case MOUSE_POSITION -> {
+                    try {
+                        MessagePosition message = SerializationUtils.deserialize(delivery.getBody());
+                        if (!Objects.equals(message.getIdSender(), uniqueID)) {
+                            this.networkController.getController().getBrushController().updateBrushPosition(message.getIdSender(), message.getBrush());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    System.out.println(message.toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
-
-
-            } else if (routingKey.equals(Topics.CELL_CLICK.name())) {
-
-                MessageClick message = SerializationUtils.deserialize(delivery.getBody());
+                case CELL_CLICK -> {
+                    try {
+                        MessageClick message = SerializationUtils.deserialize(delivery.getBody());
+                        if (!Objects.equals(message.getIdSender(), uniqueID)) {
+                            Cell cell = message.getCellClicked();
+                            this.networkController.getController().getGraphicController().getPixelArt().getGrid().set(cell.getX(), cell.getY(), cell.getColor());
+                            this.networkController.getController().getGraphicController().updateGui();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                case CLOSE -> {
+                    try {
+                        MessageClose message = SerializationUtils.deserialize(delivery.getBody());
+                        if (!Objects.equals(message.getIdSender(), uniqueID)) {
+                            this.networkController.getController().getBrushController().removeBrush(message.getIdSender());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
 
         });

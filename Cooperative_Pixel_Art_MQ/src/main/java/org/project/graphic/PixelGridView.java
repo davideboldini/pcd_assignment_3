@@ -2,22 +2,35 @@ package org.project.graphic;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.RowSpec;
+import com.jgoodies.forms.layout.FormSpecs;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 
 
 public class PixelGridView extends JFrame {
     private final VisualiserPanel panel;
+	private final DefaultTableModel dtm;
+	private final JTextArea textAreaChat;
     private final PixelGrid grid;
     private final int w, h;
     private final List<PixelGridEventListener> pixelListeners;
 	private final List<MouseMovedListener> movedListener;
 
 	private final List<ColorChangeListener> colorChangeListeners;
+
+	SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+	Date date = new Date();
     
     public PixelGridView(PixelGrid grid, BrushManager brushManager, int w, int h){
 		this.grid = grid;
@@ -39,11 +52,72 @@ public class PixelGridView extends JFrame {
 			}
 		});
 		// add panel and a button to the button to change color
-		add(panel, BorderLayout.CENTER);
-		add(colorChangeButton, BorderLayout.SOUTH);
+		getContentPane().add(panel, BorderLayout.CENTER);
+		getContentPane().add(colorChangeButton, BorderLayout.SOUTH);
         getContentPane().add(panel);
-		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        
+        JPanel panelUserChat = new JPanel();
+        getContentPane().add(panelUserChat, BorderLayout.EAST);
+        panelUserChat.setLayout(new FormLayout(new ColumnSpec[] {
+        		ColumnSpec.decode("220px:grow"),},
+        	new RowSpec[] {
+        		RowSpec.decode("31px"),
+        		RowSpec.decode("max(51dlu;default):grow"),
+        		FormSpecs.RELATED_GAP_ROWSPEC,
+        		FormSpecs.DEFAULT_ROWSPEC,
+        		FormSpecs.RELATED_GAP_ROWSPEC,
+        		RowSpec.decode("max(63dlu;default):grow"),}));
+        
+        JLabel lblUsers = new JLabel("Utenti");
+        lblUsers.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        lblUsers.setVerticalAlignment(SwingConstants.TOP);
+        lblUsers.setHorizontalAlignment(SwingConstants.CENTER);
+        panelUserChat.add(lblUsers, "1, 1, center, center");
+
+		dtm = new DefaultTableModel(0,0) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
+
+		JTable usersTable = new JTable(dtm) {
+			@Override
+			public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
+				Component comp = super.prepareRenderer(renderer, row, col);
+				Object value = getModel().getValueAt(row, col);
+				if (value instanceof Integer) {
+					comp.setBackground(new Color((Integer) value));
+				} else {
+					comp.setBackground(Color.white);
+				}
+
+				return comp;
+			}
+		};
+
+		String header[] = new String[] {
+			"Utente", "Colore"
+		};
+
+		// add header in table model
+		dtm.setColumnIdentifiers(header);
+		usersTable.setModel(dtm);
+
+        panelUserChat.add(usersTable, "1, 2, fill, fill");
+        
+        JLabel lblChat = new JLabel("Chat");
+        lblChat.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        panelUserChat.add(lblChat, "1, 4, center, default");
+
+        textAreaChat = new JTextArea();
+		textAreaChat.setEditable(false);
+
+		JScrollPane scrollPane = new JScrollPane(textAreaChat);
+
+		panelUserChat.add(scrollPane, "1, 6, fill, fill");
 		hideCursor();
+		panelUserChat.setCursor(Cursor.getDefaultCursor());
     }
     
     public void refresh(){
@@ -56,6 +130,31 @@ public class PixelGridView extends JFrame {
 			this.setVisible(true);
 		});
     }
+
+	public void addUserToTable(final String uniqueID, final int color) {
+		dtm.addRow(new Object[] {uniqueID, color});
+		textAreaChat.append(formatter.format(date) + ": " + uniqueID + " si e' unito\n");
+	}
+
+	public void removeUserToTable(final String uniqueID) {
+		for (int i = 0; i < dtm.getRowCount(); i++) {
+			if (((String)dtm.getValueAt(i, 0)).equals(uniqueID)) {
+				dtm.removeRow(i);
+				break;
+			}
+		}
+		textAreaChat.append(formatter.format(date) + ": " + uniqueID + " ha abbandonato\n");
+	}
+
+	public void updateColorUser(final String uniqueID, final int color) {
+		for (int i = 0; i < dtm.getRowCount(); i++) {
+			if (((String)dtm.getValueAt(i, 0)).equals(uniqueID)) {
+				dtm.setValueAt(color, i,1);
+				break;
+			}
+		}
+		textAreaChat.append(formatter.format(date) + ": " + uniqueID + " ha cambiato colore in " + color + "\n");
+	}
     
     public void addPixelGridEventListener(PixelGridEventListener l) { pixelListeners.add(l); }
 
@@ -107,4 +206,5 @@ public class PixelGridView extends JFrame {
 			}
 		};
 	}
+
 }

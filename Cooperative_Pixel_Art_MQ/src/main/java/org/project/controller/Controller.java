@@ -6,7 +6,6 @@ import org.project.message.MessageWelcome;
 import org.project.network.FutureQueue;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -14,22 +13,16 @@ import java.util.concurrent.TimeoutException;
 
 public class Controller {
 
-    private GraphicController graphicController;
-    private NetworkController networkController;
-    private BrushController brushController;
+    private final GraphicController graphicController;
+    private final NetworkController networkController;
+    private final BrushController brushController;
     private final String uniqueID;
 
-    public Controller(final String uniqueID){
+    public Controller(final String uniqueID, final String exchangeName, final String hostname) throws Exception {
         this.uniqueID = uniqueID;
         this.brushController = new BrushController(this);
-    }
-
-    public void initNetworkController(final String exchangeName, final String hostname) throws Exception {
         this.networkController = new NetworkController(uniqueID, exchangeName, hostname, this);
         this.networkController.initSubscriber();
-    }
-
-    public void initGraphicController(){
         this.graphicController = new GraphicController(this);
     }
 
@@ -52,28 +45,20 @@ public class Controller {
         FutureQueue futureQueue = networkController.getFutureQueue();
         networkController.newConnection();
         try {
-            MessageWelcome mexWelcome = futureQueue.getFutureWelcome().get(5, TimeUnit.SECONDS);
+            System.out.println("Controllo della presenza di altri utenti...");
+            MessageWelcome mexWelcome = futureQueue.getFutureWelcome().get(3, TimeUnit.SECONDS);
+            System.out.println("Utente trovato!");
 
             PixelGrid pixelGrid = mexWelcome.getCurrentPixelGrid();
 
             Map<String, BrushManager.Brush> brushMap = mexWelcome.getBrushMap();
+            graphicController.deployExistingPixelArt(pixelGrid);
             brushController.addBrushMap(brushMap);
 
-            graphicController.deployExistingPixelArt(pixelGrid);
-
         } catch (TimeoutException | InterruptedException | ExecutionException e) {
+            System.out.println("Nessun utente trovato");
             this.graphicController.deployNewPixelArt();
         }
-    }
-
-    public void sendWelcomeMessage() {
-        PixelGrid pixelGrid = this.graphicController.getPixelArt().getGrid();
-        if (pixelGrid == null){
-            System.out.println("NULL");
-        }
-        Map<String, BrushManager.Brush> brushMap = new HashMap<>(brushController.getBrushManager().getBrushMap());
-
-        this.networkController.newWelcome(pixelGrid, brushMap);
     }
 
     public String getUniqueID() {

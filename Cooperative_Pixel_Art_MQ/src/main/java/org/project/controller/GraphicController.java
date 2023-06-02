@@ -1,11 +1,9 @@
 package org.project.controller;
 
-import org.project.graphic.BrushManager;
 import org.project.graphic.PixelArt;
 import org.project.graphic.PixelGrid;
 
 import java.io.IOException;
-import java.util.Map;
 
 public class GraphicController {
 
@@ -18,13 +16,13 @@ public class GraphicController {
 
     public void deployNewPixelArt() throws IOException {
         pixelArt = new PixelArt(controller);
-        pixelArt.initNewPixelArt();
+        pixelArt.initPixelArt();
         pixelArt.showView();
     }
 
-    public void deployExistingPixelArt(final PixelGrid pixelGrid){
+    public void deployExistingPixelArt(final PixelGrid pixelGrid) throws IOException {
         pixelArt = new PixelArt(controller);
-        pixelArt.initExistingPixelArt(pixelGrid);
+        pixelArt.initPixelArt(pixelGrid);
         pixelArt.showView();
     }
 

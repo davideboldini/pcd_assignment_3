@@ -12,6 +12,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation("com.rabbitmq:amqp-client:5.17.0")
     implementation("org.apache.commons:commons-lang3:3.5")
+    implementation("com.jgoodies:jgoodies-forms:1.6.0")
+
 }
 
 tasks.withType<Jar> {

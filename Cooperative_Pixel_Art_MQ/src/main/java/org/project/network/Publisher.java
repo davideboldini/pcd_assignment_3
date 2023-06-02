@@ -1,6 +1,5 @@
 package org.project.network;
 
-import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -65,13 +64,9 @@ public class Publisher {
         channel.basicPublish(exchangeName, Topics.CELL_CLICK.name(), null, SerializationUtils.serialize(message));
     }
 
-    public void closeConnection(){
-        if (connection != null && connection.isOpen()){
-            try {
-                connection.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
+    public void publishCloseMessage(final MessageClose message) throws IOException, TimeoutException {
+        message.setIdSender(uniqueID);
+        channel.basicPublish(exchangeName, Topics.CLOSE.name(), null, SerializationUtils.serialize(message));
     }
+
 }
