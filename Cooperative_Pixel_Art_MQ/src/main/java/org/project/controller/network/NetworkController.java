@@ -15,13 +15,13 @@ public class NetworkController {
 
     private final Subscriber subscriber;
     private final Publisher publisher;
-    private final FutureQueue futureQueue;
+    private final FutureWelcome futureWelcome;
     private final Controller controller;
 
     public NetworkController(final String uniqueID, final String exchangeName, final String hostname, final Controller controller) throws Exception {
-        this.futureQueue = new FutureQueue();
-        this.subscriber = new Subscriber(uniqueID, exchangeName, hostname, futureQueue, this);
-        this.publisher = new Publisher(uniqueID, exchangeName, hostname, futureQueue, this);
+        this.futureWelcome = new FutureWelcome();
+        this.subscriber = new Subscriber(uniqueID, exchangeName, hostname, futureWelcome, this);
+        this.publisher = new Publisher(uniqueID, exchangeName, hostname, futureWelcome, this);
         this.controller = controller;
     }
 
@@ -76,8 +76,8 @@ public class NetworkController {
         }
     }
 
-    public FutureQueue getFutureQueue() {
-        return this.futureQueue;
+    public FutureWelcome getFutureQueue() {
+        return this.futureWelcome;
     }
 
     public Controller getController() {

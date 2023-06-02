@@ -2,7 +2,7 @@ package org.project.controller;
 
 import org.project.controller.brush.BrushController;
 import org.project.controller.graphic.GraphicController;
-import org.project.controller.network.FutureQueue;
+import org.project.controller.network.FutureWelcome;
 import org.project.controller.network.NetworkController;
 import org.project.graphic.BrushManager;
 import org.project.graphic.PixelGrid;
@@ -45,12 +45,12 @@ public class Controller {
         Thread brushControllerThread = new Thread(brushController);
         brushControllerThread.start();
 
-        FutureQueue futureQueue = networkController.getFutureQueue();
+        FutureWelcome futureWelcome = networkController.getFutureQueue();
         this.networkController.newConnection();
         try {
             System.out.println("Controllo della presenza di altri utenti...");
 
-            Pair<PixelGrid, Map<String, BrushManager.Brush>> welcomePair = futureQueue.getFutureWelcome().get(3, TimeUnit.SECONDS);
+            Pair<PixelGrid, Map<String, BrushManager.Brush>> welcomePair = futureWelcome.getFutureWelcome().get(3, TimeUnit.SECONDS);
 
             System.out.println("Utente trovato!");
 

@@ -20,15 +20,15 @@ public class Subscriber{
     private final String exchangeName;
     private String queue;
 
-    private final FutureQueue futureQueue;
+    private final FutureWelcome futureWelcome;
     private final NetworkController networkController;
 
     private final Channel channel;
 
-    public Subscriber(final String uniqueID, final String exchangeName, final String hostName, final FutureQueue futureQueue,
+    public Subscriber(final String uniqueID, final String exchangeName, final String hostName, final FutureWelcome futureWelcome,
                       final NetworkController networkController) throws IOException, TimeoutException {
         this.uniqueID = uniqueID;
-        this.futureQueue = futureQueue;
+        this.futureWelcome = futureWelcome;
         this.networkController = networkController;
         this.exchangeName = exchangeName;
 
@@ -76,8 +76,8 @@ public class Subscriber{
                 case WELCOME -> {
                     try {
                         MessageWelcome message = SerializationUtils.deserialize(delivery.getBody());
-                        if (!futureQueue.getFutureWelcome().isDone()) {
-                            futureQueue.getFutureWelcome().complete(new Pair<>(message.getCurrentPixelGrid(), message.getBrushMap()));
+                        if (!futureWelcome.getFutureWelcome().isDone()) {
+                            futureWelcome.getFutureWelcome().complete(new Pair<>(message.getCurrentPixelGrid(), message.getBrushMap()));
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

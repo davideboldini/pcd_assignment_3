@@ -13,40 +13,32 @@ import java.util.concurrent.TimeoutException;
 
 public class Publisher {
 
-    private ConnectionFactory factory;
     private final String uniqueID;
     private final String exchangeName;
 
     private final Channel channel;
-    private final Connection connection;
 
-    private FutureQueue futureQueue;
-    private NetworkController networkController;
+    private final FutureWelcome futureWelcome;
 
-    public Publisher(final String uniqueID, final String exchangeName, final String hostName, final FutureQueue futureQueue, final NetworkController networkController) throws Exception {
+    public Publisher(final String uniqueID, final String exchangeName, final String hostName, final FutureWelcome futureWelcome, final NetworkController networkController) throws Exception {
 
         this.uniqueID = uniqueID;
         this.exchangeName = exchangeName;
-        this.futureQueue = futureQueue;
-        this.networkController = networkController;
+        this.futureWelcome = futureWelcome;
 
-        this.factory = new ConnectionFactory();
-        this.factory.setHost(hostName);
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost(hostName);
 
-        this.connection = factory.newConnection();
+        Connection connection = factory.newConnection();
         this.channel = connection.createChannel();
 
         this.channel.exchangeDeclare(exchangeName, "direct");
     }
 
-    public void publishMessage(final String routingKey, final String message) throws Exception {
-        channel.basicPublish(exchangeName, routingKey, null, message.getBytes("UTF-8"));
-    }
-
     public void publishNewConnectionMessage(final MessageBoot message) throws IOException, TimeoutException {
         message.setIdSender(uniqueID);
         channel.basicPublish(exchangeName, Topics.NEW_CONNECTION.name(), null, SerializationUtils.serialize(message));
-        futureQueue.setFutureWelcome(new CompletableFuture<>());
+        futureWelcome.setFutureWelcome(new CompletableFuture<>());
     }
 
     public void publishWelcomeMessage(final MessageWelcome message) throws IOException, TimeoutException {

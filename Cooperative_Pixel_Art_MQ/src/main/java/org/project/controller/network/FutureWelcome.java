@@ -7,7 +7,7 @@ import org.project.utility.Pair;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public class FutureQueue {
+public class FutureWelcome {
 
     private CompletableFuture<Pair<PixelGrid, Map<String, BrushManager.Brush>>> futureWelcome;
 
