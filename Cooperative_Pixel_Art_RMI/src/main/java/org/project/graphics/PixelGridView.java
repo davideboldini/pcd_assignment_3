@@ -1,11 +1,15 @@
 package org.project.graphics;
 
+import org.project.shared.PixelGrid;
+import org.project.shared.brush.BrushManager;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +39,13 @@ public class PixelGridView extends JFrame {
 		colorChangeButton.addActionListener(e -> {
 			var color = JColorChooser.showDialog(this, "Choose a color", Color.BLACK);
 			if (color != null) {
-				colorChangeListeners.forEach(l -> l.colorChanged(color.getRGB()));
+				colorChangeListeners.forEach(l -> {
+					try {
+						l.colorChanged(color.getRGB());
+					} catch (RemoteException ex) {
+						throw new RuntimeException(ex);
+					}
+				});
 			}
 		});
 		// add panel and a button to the button to change color
@@ -75,11 +85,21 @@ public class PixelGridView extends JFrame {
 		return new MouseListener() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				int dx = w / grid.getNumColumns();
-				int dy = h / grid.getNumRows();
-				int col = e.getX() / dx;
-				int row = e.getY() / dy;
-				pixelListeners.forEach(l -> l.selectedCell(col, row));
+				try {
+					int dx = w / grid.getNumColumns();
+					int dy = h / grid.getNumRows();
+					int col = e.getX() / dx;
+					int row = e.getY() / dy;
+					pixelListeners.forEach(l -> {
+						try {
+							l.selectedCell(col, row);
+						} catch (RemoteException ex) {
+							throw new RuntimeException(ex);
+						}
+					});
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
 			}
 
 			@Override
@@ -103,7 +123,13 @@ public class PixelGridView extends JFrame {
 
 			@Override
 			public void mouseMoved(MouseEvent e) {
-				movedListener.forEach(l -> l.mouseMoved(e.getX(), e.getY()));
+				movedListener.forEach(l -> {
+					try {
+						l.mouseMoved(e.getX(), e.getY());
+					} catch (RemoteException ex) {
+						throw new RuntimeException(ex);
+					}
+				});
 			}
 		};
 	}
