@@ -1,39 +1,53 @@
 package org.project.graphics;
 
-import org.project.shared.PixelGrid;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.FormSpecs;
+import com.jgoodies.forms.layout.RowSpec;
+import org.project.shared.grid.PixelGrid;
 import org.project.shared.brush.BrushManager;
+import org.project.shared.log.Log;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.rmi.RemoteException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
 public class PixelGridView extends JFrame {
-    private final VisualiserPanel panel;
-    private final PixelGrid grid;
-    private final int w, h;
-    private final List<PixelGridEventListener> pixelListeners;
+	private final VisualiserPanel panel;
+	private final PixelGrid grid;
+	private final Log logger;
+	private final int w, h;
+	private final List<PixelGridEventListener> pixelListeners;
 	private final List<MouseMovedListener> movedListener;
 
 	private final List<ColorChangeListener> colorChangeListeners;
-    
-    public PixelGridView(PixelGrid grid, BrushManager brushManager, int w, int h){
+
+	SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+	Date date = new Date();
+
+	public PixelGridView(PixelGrid grid, BrushManager brushManager, final Log logger, int w, int h){
+		this.logger = logger;
 		this.grid = grid;
 		this.w = w;
 		this.h = h;
 		pixelListeners = new ArrayList<>();
 		movedListener = new ArrayList<>();
 		colorChangeListeners = new ArrayList<>();
-        setTitle(".:: PixelArt ::.");
+		setTitle(".:: PixelArt ::.");
 		setResizable(false);
-        panel = new VisualiserPanel(grid, brushManager, w, h);
-        panel.addMouseListener(createMouseListener());
+		panel = new VisualiserPanel(grid, brushManager, w, h);
+		panel.addMouseListener(createMouseListener());
 		panel.addMouseMotionListener(createMotionListener());
 		var colorChangeButton = new JButton("Change color");
 		colorChangeButton.addActionListener(e -> {
@@ -49,25 +63,26 @@ public class PixelGridView extends JFrame {
 			}
 		});
 		// add panel and a button to the button to change color
-		add(panel, BorderLayout.CENTER);
-		add(colorChangeButton, BorderLayout.SOUTH);
-        getContentPane().add(panel);
-		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		getContentPane().add(panel, BorderLayout.CENTER);
+		getContentPane().add(colorChangeButton, BorderLayout.SOUTH);
+		getContentPane().add(panel);
+
 		hideCursor();
-    }
-    
-    public void refresh(){
-        panel.repaint();
-    }
-        
-    public void display() {
+	}
+
+	public void refresh(){
+		panel.repaint();
+	}
+
+	public void display() {
 		SwingUtilities.invokeLater(() -> {
 			this.pack();
 			this.setVisible(true);
 		});
-    }
-    
-    public void addPixelGridEventListener(PixelGridEventListener l) { pixelListeners.add(l); }
+	}
+
+
+	public void addPixelGridEventListener(PixelGridEventListener l) { pixelListeners.add(l); }
 
 	public void addMouseMovedListener(MouseMovedListener l) { movedListener.add(l); }
 
@@ -97,7 +112,7 @@ public class PixelGridView extends JFrame {
 							throw new RuntimeException(ex);
 						}
 					});
-				} catch (Exception ex) {
+				} catch (RemoteException ex) {
 					ex.printStackTrace();
 				}
 			}
@@ -133,4 +148,5 @@ public class PixelGridView extends JFrame {
 			}
 		};
 	}
+
 }

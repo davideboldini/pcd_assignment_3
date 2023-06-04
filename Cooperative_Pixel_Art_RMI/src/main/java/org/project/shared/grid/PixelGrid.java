@@ -1,4 +1,4 @@
-package org.project.shared;
+package org.project.shared.grid;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

@@ -1,11 +1,14 @@
 package org.project.graphics;
 
-import org.project.shared.PixelGrid;
+import org.project.shared.grid.PixelGrid;
 import org.project.shared.brush.Brush;
 import org.project.shared.brush.BrushImpl;
 import org.project.shared.brush.BrushManager;
+import org.project.shared.log.Log;
 import org.project.utility.Pair;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.rmi.RemoteException;
 
 public class PixelArtImpl implements PixelArt{
@@ -14,6 +17,7 @@ public class PixelArtImpl implements PixelArt{
 	private PixelGrid grid;
 	private PixelGridView view;
 	private BrushManager brushManager;
+	private Log logger;
 
 	public PixelArtImpl(final String uniqueID, final BrushManager brushManager) {
 		this.uniqueID = uniqueID;
@@ -23,7 +27,7 @@ public class PixelArtImpl implements PixelArt{
 	public void initPixelArt(final PixelGrid grid) throws RemoteException {
 
 		this.grid = grid;
-		this.view = new PixelGridView(grid, brushManager, 800, 800);
+		this.view = new PixelGridView(grid, brushManager, logger, 800, 800);
 
 		Brush brush = new BrushImpl(0,0);
 		brushManager.addBrush(uniqueID, brush);
@@ -44,6 +48,19 @@ public class PixelArtImpl implements PixelArt{
 			brushManager.updateBrushColor(uniqueID, color);
 		});
 
+		view.addWindowListener((new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				try {
+					brushManager.removeBrush(uniqueID);
+				} catch (RemoteException ex) {
+					throw new RuntimeException(ex);
+				}
+				System.out.println("Chiusura...");
+				System.exit(0);
+			}
+		}));
+
 		view.display();
 	}
 
@@ -51,6 +68,11 @@ public class PixelArtImpl implements PixelArt{
 		new Thread(() -> {
 			while (true) {
 				view.refresh();
+				try {
+					Thread.sleep(30);
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
+				}
 			}
 		}).start();
 	}

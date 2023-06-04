@@ -1,6 +1,6 @@
 package org.project.graphics;
 
-import org.project.shared.PixelGrid;
+import org.project.shared.grid.PixelGrid;
 import org.project.shared.brush.Brush;
 import org.project.shared.brush.BrushManager;
 

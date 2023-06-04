@@ -1,7 +1,7 @@
 package org.project.model.message;
 
 
-import org.project.shared.PixelGridImpl;
+import org.project.shared.grid.PixelGridImpl;
 import org.project.shared.brush.Brush;
 
 import java.util.HashMap;

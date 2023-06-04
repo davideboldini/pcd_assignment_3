@@ -1,9 +1,10 @@
 package org.project;
 
-import org.project.shared.PixelGrid;
+import org.project.shared.grid.PixelGrid;
 import org.project.graphics.PixelArt;
 import org.project.graphics.PixelArtImpl;
 import org.project.shared.brush.BrushManager;
+import org.project.shared.log.Log;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -16,6 +17,7 @@ public class Main {
             String uniqueID = UUID.randomUUID().toString();
             Registry registry = LocateRegistry.getRegistry(null);
 
+            Log logger = (Log) registry.lookup("loggerObj");
             PixelGrid pixelGrid = (PixelGrid) registry.lookup("pixelGridObj");
             BrushManager brushManager = (BrushManager) registry.lookup("brushManagerObj");
 

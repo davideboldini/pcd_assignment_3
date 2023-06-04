@@ -12,10 +12,12 @@ public class BrushManagerImpl implements BrushManager, Serializable {
     private final Map<String, Brush> brushMap = new HashMap<>();
 
     public synchronized void addBrush(final String uniqueID, final Brush brush) {
+        System.out.println(uniqueID + " si è' unito");
         brushMap.put(uniqueID, brush);
     }
 
     public synchronized void removeBrush(final String uniqueID) {
+        System.out.println(uniqueID + " ha abbandonato");
         brushMap.remove(uniqueID);
     }
 
@@ -24,6 +26,7 @@ public class BrushManagerImpl implements BrushManager, Serializable {
     }
 
     public synchronized void updateBrushColor(final String uniqueID, final int color) {
+        System.out.println(uniqueID + " ha cambiato colore in: " + color);
         brushMap.get(uniqueID).setColor(color);
     }
 

@@ -1,6 +1,7 @@
 package org.project.graphics;
 
-import org.project.shared.PixelGrid;
+import org.project.shared.grid.PixelGrid;
+import org.project.shared.log.Log;
 
 import java.rmi.RemoteException;
 
