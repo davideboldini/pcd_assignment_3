@@ -31,13 +31,12 @@ public class Sender implements Runnable{
     public void sendEventColorChanged(final MessageColorChanged message) throws RemoteException {
         message.setIdSender(uniqueID);
         brushManager.updateBrushColor(message);
-        Thread.currentThread().interrupt();
     }
 
     public void sendCloseEvent(final MessageClose message) throws RemoteException {
         message.setIdSender(uniqueID);
         brushManager.removeBrush(message);
-
+        Thread.currentThread().interrupt();
     }
 
     @Override
